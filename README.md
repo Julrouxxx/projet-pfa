@@ -6,12 +6,19 @@ Le jeu s'inspire du concept des combats de [Undertale](https://fr.wikipedia.org/
 ![Exemple de combat de Undertale](/images/combat.gif)
 
 ### Obstacles
-* Default Obstacle:
+* Default Obstacle
   * Spawn: Mur
   * Info: Obstacle se dirigeant vers le mur opposé à son apparition
 * Bomb
   * Spawn: Sur le terrain
   * Info: Se détruit après 1 seconde et 4 projectiles sont lancés dans le sens opposé
+* Laser 
+  * Spawn: Mur
+  * Info: Après un court délai, tire un laser sur toute la ligne
+* Feuille
+  * Spawn: En haut, au centre
+  * Info: Feuille qui tombe avec une trajectoire imprévisible
+ 
 
 ### User Experience
 
