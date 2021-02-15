@@ -1,0 +1,4 @@
+(alias
+   (name default)
+   (deps prog/game_js.bc.js)
+)
