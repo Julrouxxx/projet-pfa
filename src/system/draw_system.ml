@@ -2,7 +2,7 @@ open Component_defs
 
 let ctx = ref None
 let init () =
-  let _, c = Gfx.create "canvas"  in
+  let _, c = Gfx.create ("game_canvas:" ^ (string_of_int Globals.canvas_width) ^ "x" ^ (string_of_int Globals.canvas_height) ^ ":0")  in
   ctx := Some c
 
 let update _dt el =

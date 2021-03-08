@@ -8,3 +8,5 @@ module Surface = Component.Make (struct include Texture let name = "texture" end
 module Name = Component.Make(struct type t = string let name = "name" end)
 module CollisionResolver = Component.Make(struct type t = Entity.t -> Entity.t -> unit let name = "resolver" end)
 module Owner = Component.Make(struct type t = Entity.t let name = "owner" end)
+module Life = Component.Make (struct type t = int let name = "life" end)
+module Invincibility = Component.Make (struct type t = float let name = "invincibility" end)
