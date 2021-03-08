@@ -105,7 +105,6 @@ let poll_event () =
   if Queue.is_empty events then Gfx_base.NoEvent
   else Queue.pop events
 
-
 let main_loop f =
   let cb = ref (Js.wrap_callback (fun _ -> ())) in
   let loop dt =

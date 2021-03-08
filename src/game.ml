@@ -29,10 +29,20 @@ let init_game _dt =
   Game_state.init player;
   false
 
+let modulo x y =
+  let result = x mod y in
+  if result >= 0 then result
+  else result + y
+
+let cpt = ref 0.0
 
 let play_game dt =
-  System.update_all dt;
-  true
+
+	if (dt >= !cpt) then begin
+		System.update_all dt;
+		cpt := !cpt +. 1000.0/.60.0;
+	end;
+  	true
 
 let game_over _dt = 
 	false
