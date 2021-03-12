@@ -10,3 +10,5 @@ module CollisionResolver = Component.Make(struct type t = Entity.t -> Entity.t -
 module Owner = Component.Make(struct type t = Entity.t let name = "owner" end)
 module Life = Component.Make (struct type t = int let name = "life" end)
 module Invincibility = Component.Make (struct type t = float let name = "invincibility" end)
+module Movement = Component.Make (struct include Direction let name = "movement" end)
+module Speed = Component.Make (struct type t = float let name = "speed" end)

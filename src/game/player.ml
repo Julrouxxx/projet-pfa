@@ -2,7 +2,7 @@ open Ecs
 open Component_defs
 open System_defs
 
-let create name x y life =
+let create name x y life speed =
   let e = Entity.create () in
   Position.set e { x = x; y = y};
   Velocity.set e Vector.zero;
@@ -12,6 +12,8 @@ let create name x y life =
   Life.set e life;
   Invincibility.set e 0.;
   Surface.set e Texture.black;
+  Movement.set e Direction.zero;
+  Speed.set e speed;
 
 
   (* systems *)
@@ -19,33 +21,25 @@ let create name x y life =
   Control_S.register e;
   Draw_S.register e;
   Move_S.register e;
+  Direction_S.register e;
   e
 
 let invincibility e duration =
   if Game_state.get_status () == Playing then
     Invincibility.set e duration
 
-let move_up e =
+let move_up e b =
   if Game_state.get_status () == Playing then
-    Velocity.set e { x = (Velocity.get e).x; y = -100.0 }
+    Movement.set e (Direction.set_up (Movement.get e) b)
   
-let move_down e =
+let move_down e b =
   if Game_state.get_status () == Playing then
-    Velocity.set e { x = (Velocity.get e).x; y = 100.0 }
+    Movement.set e (Direction.set_down (Movement.get e) b)
 
-let move_right e =
+let move_right e b =
   if Game_state.get_status () == Playing then
-    Velocity.set e { x = 100.0; y = (Velocity.get e).y }
+    Movement.set e (Direction.set_right (Movement.get e) b)
 
-let move_left e =
+let move_left e b =
   if Game_state.get_status () == Playing then
-    Velocity.set e { x = -100.0; y = (Velocity.get e).y }
-  
-let stop_horizontal e =
-  if Game_state.get_status () == Playing then
-    Velocity.set e { x = 0.0; y = (Velocity.get e).y }
-
-let stop_vertical e =
-  if Game_state.get_status () == Playing then
-    Velocity.set e { x = (Velocity.get e).x; y = 0.0 }
-  
+    Movement.set e (Direction.set_left (Movement.get e) b)
