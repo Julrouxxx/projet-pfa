@@ -1,5 +1,4 @@
 open Ecs
-open Component_defs
 
 let chain_functions f_list =
   let funs = ref f_list in
@@ -17,6 +16,31 @@ let init_game _dt =
   let player =
     Player.create "player" Globals.player_init_x Globals.player_init_y 3 100.0
   in
+  let wall_up =
+    Wall.create "wall_up" (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) 
+    						(float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0-.float_of_int (Globals.player_size)) 
+    						(Globals.player_size*32) 
+    						(Globals.player_size)
+  in
+  let wall_down =
+    Wall.create "wall_down" (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) 
+    						(float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0+.float_of_int (Globals.player_size)*.18.0) 
+    						(Globals.player_size*32) 
+    						(Globals.player_size)
+  in
+  let wall_left =
+    Wall.create "wall_left" (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) 
+    						(float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0) 
+    						(Globals.player_size) 
+    						(Globals.player_size*18)
+  in
+  let wall_right =
+    Wall.create "wall_right" (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0+.float_of_int (Globals.player_size)*.31.0) 
+    						(float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0) 
+    						(Globals.player_size) 
+    						(Globals.player_size*18)
+  in
+
   Input_handler.register_command (KeyDown "z") (fun () -> Player.move_up player true);
   Input_handler.register_command (KeyDown "s") (fun () -> Player.move_down player true);
   Input_handler.register_command (KeyDown "q") (fun () -> Player.move_left player true);
@@ -27,14 +51,14 @@ let init_game _dt =
   Input_handler.register_command (KeyUp "q") (fun () -> Player.move_left player false);
   Input_handler.register_command (KeyUp "d") (fun () -> Player.move_right player false);
 
-  Game_state.init player;
+  Game_state.set_player player;
+  Game_state.set_wall_up wall_up;
+  Game_state.set_wall_down wall_down;
+  Game_state.set_wall_left wall_left;
+  Game_state.set_wall_right wall_right;
+
   false
-
-let modulo x y =
-  let result = x mod y in
-  if result >= 0 then result
-  else result + y
-
+  
 let cpt = ref 0.0
 
 let play_game dt =
@@ -42,8 +66,7 @@ let play_game dt =
 	if (dt >= !cpt) then begin
 		System.update_all dt;
 		cpt := !cpt +. 1000.0/.60.0;
-    Gfx.debug ("right : "^string_of_bool ((Movement.get (Game_state.get_player())).right)^" left : "^string_of_bool ((Movement.get (Game_state.get_player())).left)^" up : "^string_of_bool ((Movement.get (Game_state.get_player())).up)^" down : "^string_of_bool ((Movement.get (Game_state.get_player())).down));
-	end;
+    end;
   	true
 
 let game_over _dt = 

@@ -7,7 +7,7 @@ let init () =
 
 let update _dt el =
   let ctx = Option.get !ctx in
-  Gfx.clear_rect ctx 0 0 800 600;
+  Gfx.clear_rect ctx 0 0 Globals.canvas_width Globals.canvas_height;
   List.iter (fun e ->
     let pos = Position.get e in
     let box = Box.get e in
