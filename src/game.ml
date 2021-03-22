@@ -12,19 +12,20 @@ let chain_functions f_list =
                  end
 
 let init_game _dt =
+  Random.self_init ();
   System.init_all ();
   let player =
     Player.create "player" Globals.player_init_x Globals.player_init_y 3 100.0
   in
   let wall_up =
     Wall.create "wall_up" (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) 
-    						(float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0-.float_of_int (Globals.player_size)) 
+    						(float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0) 
     						(Globals.player_size*32) 
     						(Globals.player_size)
   in
   let wall_down =
     Wall.create "wall_down" (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) 
-    						(float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0+.float_of_int (Globals.player_size)*.18.0) 
+    						(float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0+.float_of_int (Globals.player_size)*.17.0) 
     						(Globals.player_size*32) 
     						(Globals.player_size)
   in
@@ -40,7 +41,25 @@ let init_game _dt =
     						(Globals.player_size) 
     						(Globals.player_size*18)
   in
-
+  for _i = 1 to 10 do
+    let _obstacle =
+      Obstacle.create 0 0 100.0 Globals.direction_down
+    in
+    Obstacle.random_param _obstacle;
+    ()
+  done;
+  (*let _obstacle2 =
+    Obstacle.create "obstacle2" 2 0 100.0 Globals.direction_down
+  in
+  let _obstacle3 =
+    Obstacle.create "obstacle3" 3 0 100.0 Globals.direction_down
+  in
+  let _obstacle4 =
+    Obstacle.create "obstacle4" 30 0 100.0 Globals.direction_down
+  in*)
+  let _background =
+  	Bg.create Texture.black
+  in
   Input_handler.register_command (KeyDown "z") (fun () -> Player.move_up player true);
   Input_handler.register_command (KeyDown "s") (fun () -> Player.move_down player true);
   Input_handler.register_command (KeyDown "q") (fun () -> Player.move_left player true);
@@ -58,7 +77,7 @@ let init_game _dt =
   Game_state.set_wall_right wall_right;
 
   false
-  
+
 let cpt = ref 0.0
 
 let play_game dt =

@@ -9,7 +9,7 @@ let create name x y width height =
   Mass.set e infinity;
   Box.set e { width = width; height = height };
   Name.set e name;
-  Surface.set e Texture.black;
+  Surface.set e Texture.white;
 
 
   (* systems *)

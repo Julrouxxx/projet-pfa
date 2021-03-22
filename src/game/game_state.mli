@@ -4,6 +4,10 @@ type status = Menu | Playing | Pause | Gameover
 type controlmode = Sidescroller | Topdown
 
 val get_player : unit -> Entity.t
+val get_wall_up : unit -> Entity.t
+val get_wall_down : unit -> Entity.t
+val get_wall_right : unit -> Entity.t
+val get_wall_left : unit -> Entity.t
 val get_level : unit -> int
 val get_score : unit -> int
 val get_status : unit -> status

@@ -35,6 +35,10 @@ let state = ref {
 }
 
 let get_player () = !state.player
+let get_wall_up () = !state.wall_up
+let get_wall_down () = !state.wall_down
+let get_wall_right () = !state.wall_right
+let get_wall_left () = !state.wall_left
 let get_level () = !state.level
 let get_score () = !state.score
 let get_status () = !state.status
