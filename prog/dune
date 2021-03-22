@@ -4,6 +4,10 @@
  (modules game_js)
  (preprocess (pps js_of_ocaml-ppx))
  (libraries game js_of_ocaml gfx_jsoo)
+ (js_of_ocaml 
+     (javascript_files "../resources/static/data")
+     (flags --file=../resources/static/level -I . )
+ )
 )
 
 (executable
