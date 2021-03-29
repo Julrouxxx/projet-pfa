@@ -22,6 +22,7 @@ let create name x y life speed =
   Draw_S.register e;
   Move_S.register e;
   Direction_S.register e;
+  Invincibility_S.register e;
   e
 
 let invincibility e duration =

@@ -1,3 +1,3 @@
 open Ecs
 
-val create : Gfx.color -> Entity.t
+val create : Texture.t -> Entity.t

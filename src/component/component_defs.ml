@@ -13,3 +13,5 @@ module Invincibility = Component.Make (struct type t = float let name = "invinci
 module Movement = Component.Make (struct include Direction let name = "movement" end)
 module Speed = Component.Make (struct type t = float let name = "speed" end)
 module Destroyer = Component.Make(struct type t = Entity.t -> unit let name = "destroyer" end)
+module Image1 = Component.Make(struct type t = Gfx.image let name = "image1" end)
+module Image2 = Component.Make(struct type t = Gfx.image let name = "image2" end)

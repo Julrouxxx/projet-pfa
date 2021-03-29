@@ -20,7 +20,6 @@ let y_case_to_y_pos y =
 
 let random_param e =
   let random_direction = 1+(Random.int 4) in
-  Gfx.debug ("dir:"^(string_of_int random_direction));
   Movement.set e Direction.zero;
   set_direction e random_direction;
   if random_direction == Globals.direction_down || random_direction == Globals.direction_up then
@@ -28,13 +27,11 @@ let random_param e =
     if random_direction == Globals.direction_down then
       Position.set e { x = x_case_to_x_pos random_int_X; y = y_case_to_y_pos 0 }
     else Position.set e { x = x_case_to_x_pos random_int_X; y = y_case_to_y_pos 17 };
-    Gfx.debug ("x: "^(string_of_int random_int_X))
   else if random_direction == Globals.direction_right || random_direction == Globals.direction_left then
     let random_int_Y = 1+(Random.int 15) in
     if random_direction == Globals.direction_right then
       Position.set e { x = x_case_to_x_pos 0; y = y_case_to_y_pos random_int_Y }
-    else Position.set e { x = x_case_to_x_pos 31; y = y_case_to_y_pos random_int_Y };
-    Gfx.debug ("y: "^(string_of_int random_int_Y))
+    else Position.set e { x = x_case_to_x_pos 31; y = y_case_to_y_pos random_int_Y }
 
 let destroy e =
   Collision_S.unregister e;
@@ -55,8 +52,10 @@ let destroy e =
 let resolve_collision self other =
   if other == Game_state.get_player () then begin
     let p = Game_state.get_player () in
-    Player.lose_life p;
-    destroy self;
+    if Invincibility.get p <= 0.0 then begin
+      Player.lose_life p;
+      destroy self
+    end
   end
 
 

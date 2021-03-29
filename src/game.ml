@@ -1,4 +1,16 @@
 open Ecs
+open Component_defs
+
+let img_table = Hashtbl.create 16
+
+let load_image f = Hashtbl.add img_table f (Gfx.load_image f)
+
+let get_image f = Hashtbl.find img_table f
+let () = load_image "images/coeur_plein.png"
+let () = load_image "images/coeur_vide.png"
+
+let wait_img _dt =
+  not (Hashtbl.fold (fun _ img acc -> acc && Gfx.image_ready img) img_table true)
 
 let chain_functions f_list =
   let funs = ref f_list in
@@ -16,6 +28,15 @@ let init_game _dt =
   System.init_all ();
   let player =
     Player.create "player" Globals.player_init_x Globals.player_init_y 3 100.0
+  in
+  let _coeur1 =
+    Coeur.create "Coeur1" (get_image "images/coeur_plein.png") (get_image "images/coeur_vide.png") 0.0 0.0 55 1
+  in
+  let _coeur2 =
+    Coeur.create "Coeur2" (get_image "images/coeur_plein.png") (get_image "images/coeur_vide.png") 55.0 0.0 55 2
+  in
+  let _coeur3 =
+    Coeur.create "Coeur3" (get_image "images/coeur_plein.png") (get_image "images/coeur_vide.png") 110.0 0.0 55 3
   in
   let wall_up =
     Wall.create "wall_up" (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) 
@@ -85,8 +106,8 @@ let play_game dt =
 	if (dt >= !cpt) then begin
 		System.update_all dt;
 		cpt := !cpt +. 1000.0/.60.0;
-    end;
-  	true
+  end;
+  (Life.get (Game_state.get_player ())) > 0
 
 let game_over _dt = 
 	false
@@ -94,6 +115,7 @@ let game_over _dt =
 (* Question 2.3 *)
 let run () = Gfx.main_loop (
         chain_functions [
+            wait_img;
             init_game;
             play_game;
             game_over 
