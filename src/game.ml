@@ -1,6 +1,7 @@
 open Ecs
 open Component_defs
 
+
 let chain_functions f_list =
   let funs = ref f_list in
   fun dt -> match !funs with
@@ -17,6 +18,7 @@ let init_game _dt =
   let player =
     Player.create "player" Globals.player_init_x Globals.player_init_y 3 100.0
   in
+  ignore(Data.load_data "../resources/static/data");
   Input_handler.register_command (KeyDown "z") (fun () -> Player.move_up player true);
   Input_handler.register_command (KeyDown "s") (fun () -> Player.move_down player true);
   Input_handler.register_command (KeyDown "q") (fun () -> Player.move_left player true);
