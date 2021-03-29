@@ -9,6 +9,7 @@ let update _dt el =
          les objets : si on compare A et B, on ne compare pas B et A.
          Il faudra améliorer cela si on a beaucoup (> 30) objets simultanément.
       *)
+      let collision_ignore = not (Destroyer.has_component e1 || Destroyer.has_component e2) in
       if j > i then begin
         (* les composants du rectangle r1 *)
         let pos1 = Position.get e1 in
@@ -42,8 +43,10 @@ let update _dt el =
             let n2 = n_v2 /. s in
             let delta_pos1 = Vector.mult n1 n in
             let delta_pos2 = Vector.mult (Float.neg n2) n in
-            Position.set e1 (Vector.add pos1 delta_pos1);
-            Position.set e2 (Vector.add pos2 delta_pos2);
+            if collision_ignore then begin
+	            Position.set e1 (Vector.add pos1 delta_pos1);
+	            Position.set e2 (Vector.add pos2 delta_pos2);
+	        end;
            
             (* [5] On normalise n (on calcule un vecteur de même direction mais de norme 1) *)
             let n = Vector.normalize n in
@@ -74,8 +77,11 @@ let update _dt el =
             let new_v1 = Vector.add v1 (Vector.mult (j/. m1) n) in
             let new_v2 = Vector.sub v2 (Vector.mult (j/. m2) n) in
             (* [9] mise à jour des vitesses *)
-            Velocity.set e1 new_v1;
-            Velocity.set e2 new_v2;
+
+            if collision_ignore then begin
+            	Velocity.set e1 new_v1;
+	            Velocity.set e2 new_v2;
+	        end;
             (* [10] appel des resolveurs *)
             if CollisionResolver.has_component e1 then (CollisionResolver.get e1) e1 e2;
             if CollisionResolver.has_component e2 then (CollisionResolver.get e2) e2 e1

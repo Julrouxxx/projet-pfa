@@ -2,7 +2,12 @@ open Ecs
 
 type status = Menu | Playing | Pause | Gameover
 type controlmode = Sidescroller | Topdown
-val init : Entity.t -> unit
+
+val get_player : unit -> Entity.t
+val get_wall_up : unit -> Entity.t
+val get_wall_down : unit -> Entity.t
+val get_wall_right : unit -> Entity.t
+val get_wall_left : unit -> Entity.t
 val get_level : unit -> int
 val get_score : unit -> int
 val get_status : unit -> status
@@ -16,4 +21,9 @@ val menu : unit -> unit
 val sidescroller : unit -> unit
 val topdown : unit -> unit
 
-val get_player : unit -> Entity.t
+
+val set_player : Entity.t -> unit
+val set_wall_up : Entity.t -> unit
+val set_wall_down : Entity.t -> unit
+val set_wall_right : Entity.t -> unit
+val set_wall_left : Entity.t -> unit
