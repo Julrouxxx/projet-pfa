@@ -62,13 +62,15 @@ let init_game _dt =
     						(Globals.player_size) 
     						(Globals.player_size*18)
   in
-  for _i = 1 to 10 do
-    let _obstacle =
-      Obstacle.create 0 0 100.0 Globals.direction_down
-    in
-    Obstacle.random_param _obstacle;
+
+  (*ignore (Data.load_data "resources/static/data");
+  for i = 0 to (Data._size_obstacle 0) do 
+    if (Data._get_obstacle 0 i).t = "BOMB" then
+      let _obstacle =
+        Obstacle.create (Data._get_obstacle 0 i).x (Data._get_obstacle 0 i).y (Data._get_obstacle 0 i).speed (Data._get_obstacle 0 i).direction
+      in
     ()
-  done;
+  done;*)
   (*let _obstacle2 =
     Obstacle.create "obstacle2" 2 0 100.0 Globals.direction_down
   in

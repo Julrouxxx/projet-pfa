@@ -6,9 +6,10 @@
  (libraries game js_of_ocaml gfx_jsoo)
  (js_of_ocaml 
      (javascript_files "../resources/static/data")
-     (flags --file=../resources/static/level -I . )
+     (flags --file=../resources/static/data -I . )
+  )
  )
-)
+
 
 (executable
  (name game_sdl)
