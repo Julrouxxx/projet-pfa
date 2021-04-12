@@ -1,4 +1,4 @@
-type obstacle = {time: int; t: string; x: int; y: int; direction: int; speed: float};;
+type obstacle = {time: float; t: string; x: int; y: int; direction: int; speed: float};;
 type level = {effect: string list ; obstacles: obstacle list };;
 let list = ref [];;
 
@@ -8,7 +8,7 @@ let rec load_effects acc =
     | [] -> acc ;;
 let load_obstacles_aux acc =
     match acc with
-    [time; t; x; y; direction; speed] -> {time=(int_of_string time); t=t; x=(int_of_string x); y=(int_of_string y); direction=(int_of_string direction); speed=(float_of_string speed)}
+    [time; t; x; y; direction; speed] -> {time=(float_of_string time); t=t; x=(int_of_string x); y=(int_of_string y); direction=(int_of_string direction); speed=(float_of_string speed)}
     | _ -> failwith "Error" ;;
 let rec load_obstacles acc =
     match acc with

@@ -1,5 +1,5 @@
 type obstacle = {
-  time : int;
+  time : float;
   t : string;
   x : int;
   y : int;
