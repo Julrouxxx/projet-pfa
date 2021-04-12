@@ -47,7 +47,8 @@ let destroy e =
   Movement.delete e;
   Speed.delete e;
   CollisionResolver.delete e;
-  Destroyer.delete e
+  Destroyer.delete e;
+  TimeSpawn.delete e
 
 let resolve_collision self other =
   if other == Game_state.get_player () then begin
@@ -63,7 +64,7 @@ let destroyer self =
   random_param self
   (*destroy self*)
 
-let create x y speed direction =
+let create x y speed direction timespawn =
   let e = Entity.create () in
   Position.set e { x = x_case_to_x_pos x; y = y_case_to_y_pos y};
   Velocity.set e Vector.zero;
@@ -75,6 +76,7 @@ let create x y speed direction =
   CollisionResolver.set e resolve_collision;
   Destroyer.set e destroyer;
   set_direction e direction;
+  TimeSpawn.set e timespawn;
 
   (* systems *)
   Collision_S.register e;
