@@ -24,7 +24,8 @@ let load_data file =
     let () =
       try
         while true do
-           let line = input_line ic in
+           let lineRaw = input_line ic in
+           let line = String.sub lineRaw 2 (String.length lineRaw - 2) in
            list := !list@[(load_line line)];
             done
         with End_of_file -> ()
