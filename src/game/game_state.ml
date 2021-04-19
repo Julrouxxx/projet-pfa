@@ -9,7 +9,12 @@ type controlmode = Sidescroller
   | Topdown
 
 type t = {
-
+  
+  color : Gfx.color;
+  obstacles : Entity.t list;
+  coeur1 : Entity.t;
+  coeur2 : Entity.t;
+  coeur3 : Entity.t;
   player : Entity.t;
   wall_up : Entity.t;
   wall_down : Entity.t;
@@ -23,6 +28,11 @@ type t = {
 
 let state = ref {
 
+  color = Gfx.color 255 255 255 255;
+  obstacles = [];
+  coeur1 = Entity.dummy;
+  coeur2 = Entity.dummy;
+  coeur3 = Entity.dummy;
   player = Entity.dummy;
   wall_up = Entity.dummy;
   wall_down = Entity.dummy;
@@ -34,6 +44,11 @@ let state = ref {
   controlmode = Topdown
 }
 
+let get_color () = !state.color
+let get_obstacles () = !state.obstacles
+let get_coeur1 () = !state.coeur1
+let get_coeur2 () = !state.coeur2
+let get_coeur3 () = !state.coeur3
 let get_player () = !state.player
 let get_wall_up () = !state.wall_up
 let get_wall_down () = !state.wall_down
@@ -51,6 +66,20 @@ let gameover () = !state.status <- Gameover
 
 let sidescroller () = !state.controlmode <- Sidescroller
 let topdown () = !state.controlmode <- Topdown
+
+
+let set_color p =
+  state := { !state with color = p }
+
+let add_obstacles p =
+  state := { !state with obstacles = !state.obstacles@[p] }
+
+let set_coeur1 p =
+  state := { !state with coeur1 = p }
+let set_coeur2 p =
+  state := { !state with coeur2 = p }
+let set_coeur3 p =
+  state := { !state with coeur3 = p }
 
 let set_player p =
   state := { !state with player = p }

@@ -12,20 +12,18 @@ let destroy e =
   Name.delete e;
   Surface.delete e
 
-let create name x y width height =
+let create text x y width height =
   let e = Entity.create () in
   Position.set e { x = x; y = y};
-  Velocity.set e Vector.zero;
-  Mass.set e infinity;
   Box.set e { width = width; height = height };
-  Name.set e name;
-  Surface.set e Texture.white;
-
+  Surface.set e (Texture.Text(text, "60px UpheavalPro", (Game_state.get_color ())));
 
   (* systems *)
-  Collision_S.register e;
   Draw_S.register e;
   e
 
 let set_color e color =
-  Surface.set e color;
+  Surface.set e color
+
+let set_text e text =
+  Surface.set e (Texture.Text(text, "20px UpheavalPro.ttf", (Game_state.get_color ())))

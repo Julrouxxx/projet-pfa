@@ -31,6 +31,8 @@ let update _dt el =
                   let render = Texture.get_frame anim d in
                   Gfx.blit_scale ctx render (int_of_float pos.x)
                   (int_of_float pos.y) box.width box.height
+      | Text (text, font, color) ->
+                  Gfx.draw_text ctx text (int_of_float pos.x) (int_of_float pos.y) font color
     end else begin
       Gfx.fill_rect ctx 0 0 0 0 (Gfx.color 0 0 0 0);
     end

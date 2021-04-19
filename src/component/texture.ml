@@ -7,6 +7,7 @@ type t =
   Color of Gfx.color
 | Image of Gfx.render
 | Animation of animation
+| Text of (string * string * Gfx.color) (* text * font * color *)
 
 let black = Color (Gfx.color 0 0 0 255)
 let red = Color (Gfx.color 255 0 0 255)
@@ -15,7 +16,6 @@ let blue = Color (Gfx.color 0 0 255 255)
 let gray = Color (Gfx.color 128 128 128 255)
 let white = Color (Gfx.color 255 255 255 255)
 let alpha_zero = Color (Gfx.color 0 0 0 0)
-
 
 let create_image img w h = 
   let os = Gfx.create_offscreen w h in

@@ -2,6 +2,17 @@ open Ecs
 open Component_defs
 open System_defs
 
+let destroy e =
+  Coeur_S.unregister e;
+  Draw_S.unregister e;
+  Position.delete e;
+  Name.delete e;
+  Box.delete e;
+  Life.delete e;
+  Image1.delete e;
+  Image2.delete e;
+  Surface.delete e
+
 let set_image e img =
   Surface.set e (Texture.create_image img (Box.get e).width (Box.get e).width)
 

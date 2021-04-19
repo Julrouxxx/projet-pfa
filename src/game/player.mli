@@ -1,5 +1,6 @@
 open Ecs
 
+val destroy : Entity.t -> unit
 val create : string -> float -> float -> int -> float -> Entity.t
 
 val invincibility : Entity.t -> float -> unit

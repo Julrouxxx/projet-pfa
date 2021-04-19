@@ -7,3 +7,5 @@ let register_command ev f =
     Hashtbl.add commands  ev f
 
 let get_commands ev = Hashtbl.find_all commands ev
+
+let clear_commands () = Hashtbl.reset commands

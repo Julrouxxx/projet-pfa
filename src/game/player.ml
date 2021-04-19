@@ -2,6 +2,24 @@ open Ecs
 open Component_defs
 open System_defs
 
+let destroy e =
+  Collision_S.unregister e;
+  Control_S.unregister e;
+  Draw_S.unregister e;
+  Move_S.unregister e;
+  Direction_S.unregister e;
+  Invincibility_S.unregister e;
+  Position.delete e;
+  Velocity.delete e;
+  Mass.delete e;
+  Box.delete e;
+  Name.delete e;
+  Life.delete e;
+  Invincibility.delete e;
+  Surface.delete e;
+  Movement.delete e;
+  Speed.delete e
+
 let create name x y life speed =
   let e = Entity.create () in
   Position.set e { x = x; y = y};

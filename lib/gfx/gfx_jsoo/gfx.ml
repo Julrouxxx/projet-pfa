@@ -1,7 +1,6 @@
 open Js_of_ocaml
 include Gfx_base
 
-
 type window = Dom_html.canvasElement Js.t
 type render = Dom_html.canvasRenderingContext2D Js.t
 type color = string
