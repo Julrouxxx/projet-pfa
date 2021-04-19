@@ -17,3 +17,4 @@ val size_level : unit -> int
 val _get_effect : int -> int -> string
 val _size_obstacle : int -> int
 val _get_obstacle : int -> int -> obstacle
+val write_data : string -> unit

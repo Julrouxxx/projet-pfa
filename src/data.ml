@@ -49,4 +49,31 @@ let _get_obstacle level o =
     let o = List.nth (l.obstacles) o in
     o;;
 
+let write_data file =
+    let oc = open_out file in
+    begin
+    (*Level 1*)
+    Printf.fprintf oc "//,";
+    for i = 1 to 100  do
+    if i != 1 then begin
+    Printf.fprintf oc "@";
+    end;
+        let random_direction = 1+(Random.int 4) in
+        let random_int_X = ref 0 in
+        let random_int_Y = ref 0 in
+        if random_direction == Globals.direction_down || random_direction == Globals.direction_up then begin
+          random_int_X := 1+(Random.int 30);
+          if random_direction == Globals.direction_up then
+            random_int_Y := 17;
+        end
+         else if random_direction == Globals.direction_right || random_direction == Globals.direction_left then begin
+          random_int_Y := 1+(Random.int 15);
+          if random_direction == Globals.direction_left then
+            random_int_X := 31;
+        end;
+             Printf.fprintf oc "%f|OBS|%d|%d|%d|%f"  (500.0 *. (float_of_int i)) !random_int_X !random_int_Y random_direction 50.0;
+             (*if i == 100 then begin Printf.fprintf oc "\n"; end;*)
+      done;
 
+    close_out oc;
+    end;
