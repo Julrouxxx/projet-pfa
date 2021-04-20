@@ -10,7 +10,8 @@ type controlmode = Sidescroller
 
 type t = {
   
-  color : Gfx.color;
+  timer : Entity.t;
+  mutable color : Gfx.color;
   obstacles : Entity.t list;
   coeur1 : Entity.t;
   coeur2 : Entity.t;
@@ -20,6 +21,7 @@ type t = {
   wall_down : Entity.t;
   wall_right : Entity.t;
   wall_left : Entity.t;
+  mutable timeEndLevel : float;
   mutable level : int;
   mutable score : int;
   mutable status : status;
@@ -28,6 +30,7 @@ type t = {
 
 let state = ref {
 
+  timer = Entity.dummy;
   color = Gfx.color 255 255 255 255;
   obstacles = [];
   coeur1 = Entity.dummy;
@@ -38,12 +41,15 @@ let state = ref {
   wall_down = Entity.dummy;
   wall_right = Entity.dummy;
   wall_left = Entity.dummy;
+  timeEndLevel = 0.0;
   level = 1;
   score = 0;
   status = Playing;
   controlmode = Topdown
 }
 
+let get_timeEndLevel () = !state.timeEndLevel
+let get_timer () = !state.timer
 let get_color () = !state.color
 let get_obstacles () = !state.obstacles
 let get_coeur1 () = !state.coeur1
@@ -68,6 +74,11 @@ let sidescroller () = !state.controlmode <- Sidescroller
 let topdown () = !state.controlmode <- Topdown
 
 
+let set_timeEndLevel p =
+  state := { !state with timeEndLevel = p }
+
+let set_timer p =
+  state := { !state with timer = p }
 let set_color p =
   state := { !state with color = p }
 

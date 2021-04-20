@@ -61,8 +61,8 @@ let resolve_collision self other =
 
 
 let destroyer self =
-  random_param self
-  (*destroy self*)
+  (*random_param self*)
+  destroy self
 
 let create x y speed direction timespawn =
   let e = Entity.create () in

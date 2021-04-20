@@ -26,4 +26,4 @@ let set_color e color =
   Surface.set e color
 
 let set_text e text =
-  Surface.set e (Texture.Text(text, "20px UpheavalPro.ttf", (Game_state.get_color ())))
+  Surface.set e (Texture.Text(text, "60px UpheavalPro", (Game_state.get_color ())))
