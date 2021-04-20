@@ -71,7 +71,7 @@ let init_game _dt =
     						(Globals.player_size) 
     						(Globals.player_size*18)
   in
-
+  Data.create_level 1;
   ignore (Data.load_data "data");
   for i = 0 to (Data._size_obstacle 0 - 1) do
     if (Data._get_obstacle 0 i).t = "OBS" then
@@ -133,7 +133,7 @@ let play_game dt =
     Text.set_text (Game_state.get_timer ()) (float_to_time (((Game_state.get_timeEndLevel ()) +. 15000.0) -. !cpt));
 		System.update_all dt;
 		cpt := !cpt +. 1000.0/.60.0;
-    Gfx.debug (string_of_float (((Game_state.get_timeEndLevel ()) +. 15000.0) -. !cpt));
+    (*Gfx.debug (string_of_float (((Game_state.get_timeEndLevel ()) +. 15000.0) -. !cpt));*)
 	end;
 	(Life.get (Game_state.get_player ())) > 0
 

@@ -1,3 +1,5 @@
+open Ecs
+
 type obstacle = {
   time : float;
   t : string;
@@ -19,5 +21,6 @@ val _get_color_blue : int -> int
 
 val _size_obstacle : int -> int
 val _get_obstacle : int -> int -> obstacle
+val create_obstacle : float -> string -> int -> int -> int -> float -> string
 val init_data : int -> int -> int -> unit
 val create_level: int -> unit
