@@ -22,8 +22,5 @@ let create text x y width height =
   Draw_S.register e;
   e
 
-let set_color e color =
-  Surface.set e color
-
 let set_text e text =
   Surface.set e (Texture.Text(text, "60px UpheavalPro", (Game_state.get_color ())))

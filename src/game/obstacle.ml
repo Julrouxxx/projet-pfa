@@ -34,6 +34,7 @@ let random_param e =
     else Position.set e { x = x_case_to_x_pos 31; y = y_case_to_y_pos random_int_Y }
 
 let destroy e =
+  Game_state.remove_obstacles e;
   Collision_S.unregister e;
   Draw_S.unregister e;
   Move_S.unregister e;
@@ -70,7 +71,7 @@ let create x y speed direction timespawn =
   Velocity.set e Vector.zero;
   Mass.set e 10.0;
   Box.set e { width = Globals.player_size; height=Globals.player_size };
-  Surface.set e Texture.red;
+  Surface.set e (Color (Game_state.get_color ()));
   Movement.set e Direction.zero;
   Speed.set e speed;
   CollisionResolver.set e resolve_collision;

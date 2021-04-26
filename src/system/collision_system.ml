@@ -78,10 +78,13 @@ let update _dt el =
               let new_v1 = Vector.add v1 (Vector.mult (j/. m1) n) in
               let new_v2 = Vector.sub v2 (Vector.mult (j/. m2) n) in
               (* [9] mise à jour des vitesses *)
-
-              if collision_ignore then begin
-              	Velocity.set e1 new_v1;
-  	            Velocity.set e2 new_v2;
+              if(e1 != Game_state.get_wall_down () && e2 != Game_state.get_wall_down () &&
+                e1 != Game_state.get_wall_up () && e2 != Game_state.get_wall_up () &&
+                e1 != Game_state.get_wall_right () && e2 != Game_state.get_wall_right () &&
+                e1 != Game_state.get_wall_left () && e2 != Game_state.get_wall_left ()) then
+                if collision_ignore then begin
+                	Velocity.set e1 new_v1;
+    	            Velocity.set e2 new_v2;
   	        end;
               (* [10] appel des resolveurs *)
               if CollisionResolver.has_component e1 then (CollisionResolver.get e1) e1 e2;

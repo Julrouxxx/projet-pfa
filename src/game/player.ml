@@ -67,4 +67,4 @@ let lose_life e =
   if Game_state.get_status () == Playing then
     Life.set e ((Life.get e)-1);
     invincibility e Globals.invincibility_duration;
-    Gfx.debug (string_of_int (Life.get e))
+    (*Gfx.debug (string_of_int (Life.get e))*)

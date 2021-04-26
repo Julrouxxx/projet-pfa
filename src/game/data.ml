@@ -20,6 +20,11 @@ let load_line line =
        [colors; obstacles] -> {red=  int_of_string (List.nth (String.split_on_char ';' colors) 0); green=  int_of_string (List.nth (String.split_on_char ';' colors) 1); blue= int_of_string (List.nth (String.split_on_char ';' colors) 2); obstacles=(load_obstacles (String.split_on_char '@' obstacles))}
        | _ -> failwith "Error 1"
 
+
+let load_string line =
+    list := [(load_line line)];
+    List.hd !list
+
 let load_data file =
     let ic = open_in file in
     let () =
@@ -74,13 +79,14 @@ let create_obstacle time obsType x y direction speed =
 
 
 let init_data r g b =
-    str := "//" ^ string_of_int r ^ ";" ^ string_of_int 255 ^ ";" ^ string_of_int 255^ ",";
+    str := "//" ^ string_of_int r ^ ";" ^ string_of_int g ^ ";" ^ string_of_int b ^ ",";
     ()
 
 let create_level l =
+  str := "";
   match l with
-    1 ->  init_data 255 255 255;
-          for i = 1 to 100 do
+    1 ->  init_data 255 255 0;
+          for i = 0 to (*96*)3 do
             let random_direction = 1+(Random.int 4) in
             let random_int_X = ref 0 in
             let random_int_Y = ref 0 in
@@ -90,14 +96,39 @@ let create_level l =
                 random_int_Y := 17;
             end
              else if random_direction == Globals.direction_right || random_direction == Globals.direction_left then begin
-              random_int_Y := 1+(Random.int 15);
+              random_int_Y := 1+(Random.int 16);
               if random_direction == Globals.direction_left then
                 random_int_X := 31;
             end;
             str := !str ^ (create_obstacle (500.0 *. (float_of_int i)) "OBS" !random_int_X !random_int_Y random_direction 50.0);
           done;
           str := String.sub  !str 0 (String.length !str - 1);
-          Gfx.debug !str;
-          ()
-  | 2 -> () (* do level 2 *)
-  | _ -> () (* unknown *)
+          !str
+  | 2 -> init_data 255 0 255;
+          for i = 0 to 16 do
+            let random_direction = 1+(Random.int 4) in
+            let random_int_X = ref 0 in
+            let random_int_Y = ref 0 in
+            if random_direction == Globals.direction_down || random_direction == Globals.direction_up then begin
+              if random_direction == Globals.direction_up then
+                random_int_Y := 17;
+              random_int_X := 2+(Random.int 28);
+              for j = 1 to 30 do
+                if(not(!random_int_X - 1 <= j && j <= !random_int_X + 1)) then
+                  str := !str ^ (create_obstacle (3000.0 *. (float_of_int i)) "OBS" j !random_int_Y random_direction 50.0);
+              done;
+            end
+             else if random_direction == Globals.direction_right || random_direction == Globals.direction_left then begin
+              if random_direction == Globals.direction_left then
+                random_int_X := 31;
+              random_int_Y := 2+(Random.int 14);
+              for j = 1 to 16 do
+                if(not(!random_int_Y - 1 <= j && j <= !random_int_Y + 1)) then
+                  str := !str ^ (create_obstacle (3000.0 *. (float_of_int i)) "OBS" !random_int_X j random_direction 50.0);
+              done;
+            end;
+          done;
+          str := String.sub  !str 0 (String.length !str - 1);
+          !str
+  | 3 -> !str (* do level 3 *)
+  | _ -> !str (* unknown *) 

@@ -1,5 +1,6 @@
 open Ecs
 open Component_defs
+open Data
 
 let img_table = Hashtbl.create 16
 
@@ -11,6 +12,52 @@ let () = load_image "images/coeur_vide.png"
 
 let wait_img _dt =
   not (Hashtbl.fold (fun _ img acc -> acc && Gfx.image_ready img) img_table true)
+
+let reset_background () =
+  if ((Game_state.get_background ()) != Entity.dummy) then
+    Bg.destroy (Game_state.get_background ());
+  let _background =
+    Bg.create Texture.black
+  in
+  Game_state.set_background _background
+
+let load_level n dt =
+  let strData = Data.create_level n in
+  let strData = String.sub strData 2 (String.length strData - 2) in
+  let level = Data.load_string strData in
+  Game_state.set_timeStartLevel (dt +. (List.hd level.obstacles).time);
+  for i = 0 to (List.length level.obstacles - 1) do
+    Game_state.set_timeStartLevel (min (Game_state.get_timeStartLevel ()) (dt +. (List.nth level.obstacles i).time));
+    Game_state.set_timeEndLevel (max (Game_state.get_timeEndLevel ()) (dt +. (List.nth level.obstacles i).time+.(List.nth level.obstacles i).speed*.13000.0/.50.0));
+  done;
+  Game_state.set_color (Gfx.color level.red level.green level.blue 255);
+  Wall.set_color (Game_state.get_wall_up ()) (Color (Game_state.get_color ()));
+  Wall.set_color (Game_state.get_wall_down ()) (Color (Game_state.get_color ()));
+  Wall.set_color (Game_state.get_wall_right ()) (Color (Game_state.get_color ()));
+  Wall.set_color (Game_state.get_wall_left ()) (Color (Game_state.get_color ()));
+  Game_state.set_levels [level]
+
+let obstacle_spawner dt =
+  let level = List.hd (Game_state.get_levels ()) in
+  try
+    for i = 0 to (List.length level.obstacles - 1) do
+      let obs = (List.nth level.obstacles i) in
+      if (Game_state.get_timeStartLevel ()) +. obs.time <= dt then begin
+        if obs.t = "OBS" then begin
+          let _obstacle =
+            Obstacle.create obs.x obs.y obs.speed obs.direction ((Game_state.get_timeStartLevel ()) +. obs.time)
+          in
+          Game_state.add_obstacles _obstacle;
+        end;
+        reset_background ();
+      end 
+      else raise Exit
+    done;
+    let level = {red = level.red; green = level.green; blue = level.blue; obstacles = (List.filter (fun x -> (Game_state.get_timeStartLevel ()) +. x.time > dt) level.obstacles)} in
+    Game_state.set_levels [level]
+  with Exit -> 
+    let level = {red = level.red; green = level.green; blue = level.blue; obstacles = (List.filter (fun x -> (Game_state.get_timeStartLevel ()) +. x.time > dt) level.obstacles)} in
+    Game_state.set_levels [level]
 
 let chain_functions f_list =
   let funs = ref f_list in
@@ -71,17 +118,7 @@ let init_game _dt =
     						(Globals.player_size) 
     						(Globals.player_size*18)
   in
-  Data.create_level 1;
-  ignore (Data.load_data "data");
-  for i = 0 to (Data._size_obstacle 0 - 1) do
-    if (Data._get_obstacle 0 i).t = "OBS" then
-      let _obstacle =
-        Obstacle.create (Data._get_obstacle 0 i).x (Data._get_obstacle 0 i).y (Data._get_obstacle 0 i).speed (Data._get_obstacle 0 i).direction (Data._get_obstacle 0 i).time
-      in
-      Game_state.set_timeEndLevel (max (Game_state.get_timeEndLevel ()) (Data._get_obstacle 0 i).time);
-  	  Game_state.add_obstacles _obstacle;
-      ()
-  done;
+  reset_background ();
   (*for i = 0 to 15 do 
     Obstacle.random_param (Obstacle.create 0 0 100.0 Globals.direction_down 0.0)
   done;*)
@@ -94,9 +131,6 @@ let init_game _dt =
   let _obstacle4 =
     Obstacle.create 30 0 100.0 Globals.direction_down
   in*)
-  let _background =
-  	Bg.create Texture.black
-  in
   Input_handler.register_command (KeyDown "z") (fun () -> Player.move_up player true);
   Input_handler.register_command (KeyDown "s") (fun () -> Player.move_down player true);
   Input_handler.register_command (KeyDown "q") (fun () -> Player.move_left player true);
@@ -117,6 +151,7 @@ let init_game _dt =
   Game_state.set_wall_left wall_left;
   Game_state.set_wall_right wall_right;
 
+  load_level (Game_state.get_numLevel ()) _dt;
   false
 
 let cpt = ref 0.0
@@ -130,10 +165,17 @@ let float_to_time v =
 
 let play_game dt =
 	if (dt >= !cpt) then begin
-    Text.set_text (Game_state.get_timer ()) (float_to_time (((Game_state.get_timeEndLevel ()) +. 15000.0) -. !cpt));
 		System.update_all dt;
 		cpt := !cpt +. 1000.0/.60.0;
     (*Gfx.debug (string_of_float (((Game_state.get_timeEndLevel ()) +. 15000.0) -. !cpt));*)
+    obstacle_spawner dt;
+    (*Text.set_text (Game_state.get_timer ()) (string_of_float (((Game_state.get_timeEndLevel ())) -. !cpt));*)
+    Text.set_text (Game_state.get_timer ()) (float_to_time (((Game_state.get_timeEndLevel ())) -. !cpt));
+    (*Text.set_text (Game_state.get_timer ()) (string_of_int (List.length (Game_state.get_obstacles ())));*)
+    if ((((Game_state.get_timeEndLevel ())) -. !cpt) < 0.0) then begin
+      Game_state.set_numLevel (Game_state.get_numLevel () + 1);
+      load_level (Game_state.get_numLevel ()) dt;
+    end
 	end;
 	(Life.get (Game_state.get_player ())) > 0
 
