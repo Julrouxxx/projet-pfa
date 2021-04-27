@@ -2,6 +2,11 @@ open Ecs
 open Component_defs
 open System_defs
 
+
+let reset_background e =
+  Draw_S.unregister e;
+  Draw_S.register e
+
 let destroy e =
   Draw_S.unregister e;
   Position.delete e;

@@ -2,6 +2,8 @@ open Ecs
 open Component_defs
 open Data
 
+let cpt = ref 0.0
+
 let img_table = Hashtbl.create 16
 
 let load_image f = Hashtbl.add img_table f (Gfx.load_image f)
@@ -14,12 +16,7 @@ let wait_img _dt =
   not (Hashtbl.fold (fun _ img acc -> acc && Gfx.image_ready img) img_table true)
 
 let reset_background () =
-  if ((Game_state.get_background ()) != Entity.dummy) then
-    Bg.destroy (Game_state.get_background ());
-  let _background =
-    Bg.create Texture.black
-  in
-  Game_state.set_background _background
+  Bg.reset_background (Game_state.get_background ())
 
 let load_level n dt =
   let strData = Data.create_level n in
@@ -70,14 +67,89 @@ let chain_functions f_list =
                   true
                  end
 
-let init_game _dt =
+let init_menu _dt =
   Random.self_init ();
   System.init_all ();
+  let _background =
+    Bg.create Texture.black
+  in
+  let _title =
+    Text.create "JustDodge" (float_of_int (Globals.canvas_width)/.2.0 -. 480.0/.2.0) 
+                            140.0 
+                            90;
+  in 
+  let _endless =
+    Text.create "  endless" (float_of_int (Globals.canvas_width)/.2.0 -. 120.0/.2.0) 
+                            (float_of_int (Globals.canvas_height)/.2.0)
+                            25;
+  in 
+  let _niveaux =
+    Text.create "> niveaux" (float_of_int (Globals.canvas_width)/.2.0 -. 120.0/.2.0) 
+                            (float_of_int (Globals.canvas_height)/.2.0 +. 25.0)
+                            25;
+  in 
+  let _niveau1 =
+    Text.create "  1" (float_of_int (Globals.canvas_width)/.2.0 +. 120.0/.2.0 +. 20.0) 
+                            (float_of_int (Globals.canvas_height)/.2.0)
+                            25;
+  in 
+  let _niveau2 =
+    Text.create "> 2" (float_of_int (Globals.canvas_width)/.2.0 +. 120.0/.2.0 +. 20.0) 
+                            (float_of_int (Globals.canvas_height)/.2.0 +. 25.0)
+                            25;
+  in 
+  let _niveau3 =
+    Text.create "  3" (float_of_int (Globals.canvas_width)/.2.0 +. 120.0/.2.0 +. 20.0) 
+                            (float_of_int (Globals.canvas_height)/.2.0 +. 50.0)
+                            25;
+  in 
+  Game_state.set_background _background;
+  Menu_manager.set_title (_title, "JustDodge");
+  Menu_manager.set_endless (_endless, " endless");
+  Menu_manager.set_niveaux (_niveaux, " niveaux");
+  Menu_manager.set_niveau1 (_niveau1);
+  Menu_manager.set_niveau2 (_niveau2);
+  Menu_manager.set_niveau3 (_niveau3);
+  Menu_manager.add_listNiveaux " 1";
+  Menu_manager.add_listNiveaux " 2";
+  Menu_manager.add_listNiveaux " 3";
+  Menu_manager.add_listNiveaux " 4";
+  Menu_manager.add_listNiveaux " 5";
+  Menu_manager.add_listNiveaux " 6";
+  Menu_manager.add_listNiveaux " 7";
+  Menu_manager.add_listNiveaux " 8";
+  Menu_manager.add_listNiveaux " 9";
+  Menu_manager.add_listNiveaux " 10+";
+  Menu_manager.event ();
+
+  Input_handler.register_command (KeyDown "z") (fun () -> Menu_manager.event_haut ());
+  Input_handler.register_command (KeyDown "s") (fun () -> Menu_manager.event_bas ());
+  Input_handler.register_command (KeyDown "d") (fun () -> Menu_manager.enter ());
+  Input_handler.register_command (KeyDown "q") (fun () -> Menu_manager.back ());
+
+  Input_handler.register_command (KeyUp "z") (fun () -> Menu_manager.release_haut ());
+  Input_handler.register_command (KeyUp "s") (fun () -> Menu_manager.release_bas ());
+  reset_background ();
+  false
+
+let menu dt =
+  if (dt >= !cpt) then begin
+    System.update_all dt;
+    cpt := !cpt +. 1000.0/.60.0;
+    
+  end;
+  true
+
+let init_game _dt =
+  Text.destroy (fst (Menu_manager.get_title ()));
+  Text.destroy (fst (Menu_manager.get_endless ()));
+  Text.destroy (fst (Menu_manager.get_niveaux ()));
+  Input_handler.clear_commands ();
+
   let timer =
 	  Text.create "01:54" (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0+.float_of_int (Globals.player_size)*.32.0-.156.0) 
                         (float_of_int (Globals.canvas_height)/.2.0-.float_of_int (Globals.player_size)*.18.0/.2.0-.5.0) 
-                        0 
-                        0;
+                        60;
   in 
   let player =
     Player.create "player" Globals.player_init_x Globals.player_init_y 1000 100.0
@@ -154,8 +226,6 @@ let init_game _dt =
   load_level (Game_state.get_numLevel ()) _dt;
   false
 
-let cpt = ref 0.0
-
 let float_to_time v =
   string_of_int (((int_of_float (v/.100000.0)) mod 10) / 3)^
   string_of_int (((int_of_float (v/.10000.0)) mod 10) / 6)^
@@ -170,7 +240,7 @@ let play_game dt =
     (*Gfx.debug (string_of_float (((Game_state.get_timeEndLevel ()) +. 15000.0) -. !cpt));*)
     obstacle_spawner dt;
     (*Text.set_text (Game_state.get_timer ()) (string_of_float (((Game_state.get_timeEndLevel ())) -. !cpt));*)
-    Text.set_text (Game_state.get_timer ()) (float_to_time (((Game_state.get_timeEndLevel ())) -. !cpt));
+    Text.set_text (Game_state.get_timer ()) (float_to_time (((Game_state.get_timeEndLevel ())) -. !cpt)) 60;
     (*Text.set_text (Game_state.get_timer ()) (string_of_int (List.length (Game_state.get_obstacles ())));*)
     if ((((Game_state.get_timeEndLevel ())) -. !cpt) < 0.0) then begin
       Game_state.set_numLevel (Game_state.get_numLevel () + 1);
@@ -204,6 +274,8 @@ let game_over dt =
 let run () = Gfx.main_loop (
     chain_functions [
         wait_img;
+        init_menu;
+        menu;
         init_game;
         play_game;
         init_game_over;
