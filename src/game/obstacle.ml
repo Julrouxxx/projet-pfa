@@ -63,6 +63,7 @@ let resolve_collision self other =
 
 let destroyer self =
   (*random_param self*)
+  Game_state.inc_score ();
   destroy self
 
 let create x y speed direction timespawn =

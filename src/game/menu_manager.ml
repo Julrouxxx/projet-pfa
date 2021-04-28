@@ -32,6 +32,22 @@ let state = ref {
   currentNiveau = 1;
 }
 
+let clear () =
+  state := {
+    title = (Entity.dummy, "");
+    endless = (Entity.dummy, "");
+    niveaux = (Entity.dummy, "");
+    niveau1 = Entity.dummy;
+    niveau2 = Entity.dummy;
+    niveau3 = Entity.dummy;
+    listNiveaux = [];
+    keyPressedHaut = false;
+    keyPressedBas = false;
+    isNiveau = false;
+    currentMode = 1;
+    currentNiveau = 1;
+  }
+
 let get_title () = !state.title
 let get_endless () = !state.endless
 let get_niveaux () = !state.niveaux
@@ -63,35 +79,35 @@ let event () =
   Gfx.debug (string_of_int (!state.currentMode));
   match !state.currentMode with
   | 1 -> 
-    Text.set_text (fst !state.endless) (">"^(snd !state.endless)) 25;
-    Text.set_text (fst !state.niveaux) (" "^(snd !state.niveaux)) 25;
+    Text.set_text (fst !state.endless) ("> "^(snd !state.endless)) 25;
+    Text.set_text (fst !state.niveaux) ("  "^(snd !state.niveaux)) 25;
     (Text.hide_text !state.niveau1);
     (Text.hide_text !state.niveau2);
     (Text.hide_text !state.niveau3)
   | 2 -> 
-    Text.set_text (fst !state.endless) (" "^(snd !state.endless)) 25;
+    Text.set_text (fst !state.endless) ("  "^(snd !state.endless)) 25;
     if (!state.isNiveau) then
-      Text.set_text (fst !state.niveaux) (" "^(snd !state.niveaux)) 25
+      Text.set_text (fst !state.niveaux) ("  "^(snd !state.niveaux)) 25
     else
-      Text.set_text (fst !state.niveaux) (">"^(snd !state.niveaux)) 25;
+      Text.set_text (fst !state.niveaux) ("> "^(snd !state.niveaux)) 25;
     (Text.show_text !state.niveau1);
     (Text.show_text !state.niveau2);
     (Text.show_text !state.niveau3);
 
     if (!state.currentNiveau - 1) > 0 then
-      Text.set_text !state.niveau1 (" "^(List.nth !state.listNiveaux (!state.currentNiveau - 1 - 1))) 25
+      Text.set_text !state.niveau1 ("  "^(List.nth !state.listNiveaux (!state.currentNiveau - 1 - 1))) 25
     else 
       Text.set_text !state.niveau1 "" 25;
 
     if (!state.currentNiveau) < List.length (!state.listNiveaux) then
-      Text.set_text !state.niveau3 (" "^(List.nth !state.listNiveaux (!state.currentNiveau - 1 + 1))) 25
+      Text.set_text !state.niveau3 ("  "^(List.nth !state.listNiveaux (!state.currentNiveau - 1 + 1))) 25
     else 
       Text.set_text !state.niveau3 "" 25;
 
     if (!state.isNiveau) then
-      Text.set_text !state.niveau2 (">"^(List.nth !state.listNiveaux (!state.currentNiveau - 1))) 25
+      Text.set_text !state.niveau2 ("> "^(List.nth !state.listNiveaux (!state.currentNiveau - 1))) 25
     else
-      Text.set_text !state.niveau2 (" "^(List.nth !state.listNiveaux (!state.currentNiveau - 1))) 25
+      Text.set_text !state.niveau2 ("  "^(List.nth !state.listNiveaux (!state.currentNiveau - 1))) 25
   | _ -> 
     (Text.hide_text !state.niveau1);
     (Text.hide_text !state.niveau2);
@@ -134,11 +150,19 @@ let release_bas () =
 
 let enter () =
   match !state.currentMode with
-  | 1 -> ()
+  | 1 -> 
+      Game_state.set_numLevel 1;
+      Game_state.set_isRepeat false;
+      Game_state.play ()
   | 2 -> 
-    if not(!state.isNiveau) then
+    if not(!state.isNiveau) then begin
       state := { !state with isNiveau = true };
-    event ()
+      event ();
+    end else begin
+      Game_state.set_numLevel (int_of_string (List.nth !state.listNiveaux (!state.currentNiveau - 1)));
+      Game_state.set_isRepeat true;
+      Game_state.play ();
+    end 
   | _ -> ()
 
 let back () =

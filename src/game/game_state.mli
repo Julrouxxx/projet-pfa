@@ -2,7 +2,7 @@ open Ecs
 open Data
 
 type status = Menu | Playing | Pause | Gameover
-type controlmode = Sidescroller | Topdown
+type scene = Menu | Play | Gameover
 
 val get_levels : unit -> level list
 val get_timeStartLevel : unit -> float
@@ -22,17 +22,27 @@ val get_background : unit -> Entity.t
 val get_numLevel : unit -> int
 val get_score : unit -> int
 val get_status : unit -> status
-val get_controlmode : unit -> controlmode
+val get_scene: unit -> scene
+val get_isRepeat: unit -> bool
 
-val play : unit -> unit
+val playing : unit -> unit
 val pause : unit -> unit
 val gameover : unit -> unit
 val menu : unit -> unit
 
-val sidescroller : unit -> unit
-val topdown : unit -> unit
+val menu : unit -> unit
+val play : unit -> unit
+val gameover : unit -> unit
 
+val isMenu : unit -> bool
+val isPlay : unit -> bool
+val isGameover : unit -> bool
 
+val inc_score : unit -> unit
+val reset_score : unit -> unit
+
+val set_isRepeat : bool -> unit
+val set_numLevel : int -> unit
 val set_levels : level list -> unit
 val set_timeStartLevel : float -> unit
 val set_timeEndLevel : float -> unit

@@ -82,53 +82,124 @@ let init_data r g b =
     str := "//" ^ string_of_int r ^ ";" ^ string_of_int g ^ ";" ^ string_of_int b ^ ",";
     ()
 
+let random_position direction timeSpawn speed =
+  let random_int_X = ref 0 in
+  let random_int_Y = ref 0 in
+  if direction == Globals.direction_down || direction == Globals.direction_up then begin
+    random_int_X := 1+(Random.int 30);
+    if direction == Globals.direction_up then
+      random_int_Y := 17;
+  end
+   else if direction == Globals.direction_right || direction == Globals.direction_left then begin
+    random_int_Y := 1+(Random.int 16);
+    if direction == Globals.direction_left then
+      random_int_X := 31;
+  end;
+  str := !str ^ (create_obstacle timeSpawn "OBS" !random_int_X !random_int_Y direction speed);
+  ()
+
+let line direction timeSpawn speed =
+  let random_int_X = ref 0 in
+  let random_int_Y = ref 0 in
+  if direction == Globals.direction_down || direction == Globals.direction_up then begin
+    if direction == Globals.direction_up then
+      random_int_Y := 17;
+    random_int_X := 2+(Random.int 28);
+    for j = 1 to 30 do
+      if(not(!random_int_X - 1 <= j && j <= !random_int_X + 1)) then
+        str := !str ^ (create_obstacle timeSpawn "OBS" j !random_int_Y direction speed);
+    done;
+  end
+   else if direction == Globals.direction_right || direction == Globals.direction_left then begin
+    if direction == Globals.direction_left then
+      random_int_X := 31;
+    random_int_Y := 2+(Random.int 14);
+    for j = 1 to 16 do
+      if(not(!random_int_Y - 1 <= j && j <= !random_int_Y + 1)) then
+        str := !str ^ (create_obstacle timeSpawn "OBS" !random_int_X j direction speed);
+    done;
+  end;
+  ()
+
+let diagonal direction timeSpawn speed =
+  let random_int_X = ref 0 in
+  let random_int_Y = ref 0 in
+  if direction == Globals.direction_down || direction == Globals.direction_up then begin
+    if direction == Globals.direction_up then
+      random_int_Y := 17;
+    random_int_X := 2+(Random.int 28);
+    for j = 1 to 30 do
+      if(not(!random_int_X - 1 <= j && j <= !random_int_X + 1)) then
+        str := !str ^ (create_obstacle (timeSpawn+.20000.0/.speed*.(float_of_int (j)-.1.0)) "OBS" j !random_int_Y direction speed);
+    done;
+  end
+   else if direction == Globals.direction_right || direction == Globals.direction_left then begin
+    if direction == Globals.direction_left then
+      random_int_X := 31;
+    random_int_Y := 2+(Random.int 14);
+    for j = 1 to 16 do
+      if(not(!random_int_Y - 1 <= j && j <= !random_int_Y + 1)) then
+        str := !str ^ (create_obstacle (timeSpawn+.20000.0/.speed*.(float_of_int (j)-.1.0)) "OBS" !random_int_X j direction speed);
+    done;
+  end;
+  ()
+
+let reverse_diagonal direction timeSpawn speed =
+  let random_int_X = ref 0 in
+  let random_int_Y = ref 0 in
+  if direction == Globals.direction_down || direction == Globals.direction_up then begin
+    if direction == Globals.direction_up then
+      random_int_Y := 17;
+    random_int_X := 2+(Random.int 28);
+    for j = 1 to 30 do
+      if(not(!random_int_X - 1 <= j && j <= !random_int_X + 1)) then
+        str := !str ^ (create_obstacle (timeSpawn+.20000.0/.speed*.(float_of_int (31-j)-.1.0)) "OBS" j !random_int_Y direction speed);
+    done;
+  end
+   else if direction == Globals.direction_right || direction == Globals.direction_left then begin
+    if direction == Globals.direction_left then
+      random_int_X := 31;
+    random_int_Y := 2+(Random.int 14);
+    for j = 1 to 16 do
+      if(not(!random_int_Y - 1 <= j && j <= !random_int_Y + 1)) then
+        str := !str ^ (create_obstacle (timeSpawn+.20000.0/.speed*.(float_of_int (17-j)-.1.0)) "OBS" !random_int_X j direction speed);
+    done;
+  end;
+  ()
+
 let create_level l =
   str := "";
   match l with
     1 ->  init_data 255 255 0;
-          for i = 0 to (*96*)3 do
+          for i = 0 to 96 do
             let random_direction = 1+(Random.int 4) in
-            let random_int_X = ref 0 in
-            let random_int_Y = ref 0 in
-            if random_direction == Globals.direction_down || random_direction == Globals.direction_up then begin
-              random_int_X := 1+(Random.int 30);
-              if random_direction == Globals.direction_up then
-                random_int_Y := 17;
-            end
-             else if random_direction == Globals.direction_right || random_direction == Globals.direction_left then begin
-              random_int_Y := 1+(Random.int 16);
-              if random_direction == Globals.direction_left then
-                random_int_X := 31;
-            end;
-            str := !str ^ (create_obstacle (500.0 *. (float_of_int i)) "OBS" !random_int_X !random_int_Y random_direction 50.0);
+            random_position random_direction (500.0 *. (float_of_int i)) 50.0;
           done;
           str := String.sub  !str 0 (String.length !str - 1);
           !str
   | 2 -> init_data 255 0 255;
           for i = 0 to 16 do
             let random_direction = 1+(Random.int 4) in
-            let random_int_X = ref 0 in
-            let random_int_Y = ref 0 in
-            if random_direction == Globals.direction_down || random_direction == Globals.direction_up then begin
-              if random_direction == Globals.direction_up then
-                random_int_Y := 17;
-              random_int_X := 2+(Random.int 28);
-              for j = 1 to 30 do
-                if(not(!random_int_X - 1 <= j && j <= !random_int_X + 1)) then
-                  str := !str ^ (create_obstacle (3000.0 *. (float_of_int i)) "OBS" j !random_int_Y random_direction 50.0);
-              done;
-            end
-             else if random_direction == Globals.direction_right || random_direction == Globals.direction_left then begin
-              if random_direction == Globals.direction_left then
-                random_int_X := 31;
-              random_int_Y := 2+(Random.int 14);
-              for j = 1 to 16 do
-                if(not(!random_int_Y - 1 <= j && j <= !random_int_Y + 1)) then
-                  str := !str ^ (create_obstacle (3000.0 *. (float_of_int i)) "OBS" !random_int_X j random_direction 50.0);
-              done;
-            end;
+            line random_direction (3000.0 *. (float_of_int i)) 50.0;
           done;
           str := String.sub  !str 0 (String.length !str - 1);
           !str
-  | 3 -> !str (* do level 3 *)
+  | 3 -> init_data 255 0 0;
+          for i = 0 to 26 do
+            line 1 (2000.0 *. (float_of_int i)) 75.0;
+          done;
+          for i = 0 to 103 do
+            random_position 4 (500.0 *. (float_of_int i)) 70.0;
+          done;
+          str := String.sub  !str 0 (String.length !str - 1);
+          !str
+  | 4 -> init_data 0 255 255;
+          for i = 0 to 9 do
+            diagonal 1 (5000.0 *. (float_of_int i)) 60.0;
+          done;
+          for i = 0 to 9 do
+            reverse_diagonal 2 (5000.0 *. (float_of_int i)) 60.0;
+          done;
+          str := String.sub  !str 0 (String.length !str - 1);
+          !str
   | _ -> !str (* unknown *) 

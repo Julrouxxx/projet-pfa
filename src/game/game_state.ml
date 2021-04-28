@@ -6,8 +6,9 @@ type status = Menu
   | Pause 
   | Gameover
 
-type controlmode = Sidescroller 
-  | Topdown
+type scene = Menu 
+  | Play
+  | Gameover
 
 type t = {
   
@@ -28,8 +29,9 @@ type t = {
   mutable timeStartLevel : float;
   mutable numLevel : int;
   mutable score : int;
+  mutable isRepeat : bool;
   mutable status : status;
-  mutable controlmode : controlmode;
+  mutable scene : scene;
 }
 
 let state = ref {
@@ -51,8 +53,9 @@ let state = ref {
   timeStartLevel = 0.0;
   numLevel = 1;
   score = 0;
+  isRepeat = false;
   status = Playing;
-  controlmode = Topdown
+  scene = Menu
 }
 
 let get_levels () = !state.levels
@@ -73,16 +76,32 @@ let get_background () = !state.background
 let get_numLevel () = !state.numLevel
 let get_score () = !state.score
 let get_status () = !state.status
-let get_controlmode () = !state.controlmode
+let get_scene () = !state.scene
+let get_isRepeat () = !state.isRepeat
 
 let menu () = !state.status <- Menu
-let play () = !state.status <- Playing
+let playing () = !state.status <- Playing
 let pause () = !state.status <- Pause
 let gameover () = !state.status <- Gameover
 
-let sidescroller () = !state.controlmode <- Sidescroller
-let topdown () = !state.controlmode <- Topdown
+let menu () = !state.scene <- Menu
+let play () = !state.scene <- Play
+let gameover () = !state.scene <- Gameover
 
+let isMenu () = !state.scene == Menu
+let isPlay () = !state.scene == Play
+let isGameover () = !state.scene == Gameover
+
+let inc_score () =
+  state := { !state with score = !state.score + 1 }
+let reset_score () =
+  state := { !state with score = 0 }
+
+let set_isRepeat p =
+  state := { !state with isRepeat = p }
+
+let set_numLevel p =
+  state := { !state with numLevel = p }
 
 let set_levels p =
   state := { !state with levels = p }

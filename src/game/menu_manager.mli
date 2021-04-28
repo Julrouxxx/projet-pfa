@@ -1,5 +1,4 @@
 open Ecs
-open Data
 
 val get_title : unit -> (Entity.t * string)
 val get_endless : unit -> (Entity.t * string)
@@ -27,3 +26,5 @@ val release_bas : unit -> unit
 val event : unit -> unit
 val enter : unit -> unit
 val back : unit -> unit
+
+val clear : unit -> unit
