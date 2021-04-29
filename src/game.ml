@@ -33,7 +33,6 @@ let load_level n dt =
   Game_state.set_timeStartLevel (dt +. (List.hd level.obstacles).time);
   Game_state.set_timeEndLevel 0.0;
   for i = 0 to (List.length level.obstacles - 1) do
-    Gfx.debug ((List.nth level.obstacles i).t);
     if (List.nth level.obstacles i).t = "OBS" then begin
       Game_state.set_timeStartLevel (min (Game_state.get_timeStartLevel ()) (dt +. (List.nth level.obstacles i).time));
       Game_state.set_timeEndLevel (max (Game_state.get_timeEndLevel ()) (dt +. (List.nth level.obstacles i).time+.13000.0*.(50.0/.(List.nth level.obstacles i).speed)));
@@ -62,7 +61,6 @@ let obstacle_spawner dt =
             Obstacle_wall.create obs.x obs.y obs.speed obs.direction ((Game_state.get_timeStartLevel ()) +. obs.time)
           in
           Game_state.add_obstacles_wall _obstacle_wall;
-          Gfx.debug (string_of_int (List.length (Game_state.get_obstacles_wall ())));
         end;
         reset_background ();
       end 
@@ -127,7 +125,7 @@ let init_game _dt =
                         60;
   in 
   let player =
-    Player.create "player" Globals.player_init_x Globals.player_init_y 1000 130.0
+    Player.create "player" Globals.player_init_x Globals.player_init_y 3 130.0
   in
   let coeur_size = 33 in
   let coeur_XoffSet = (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) in
@@ -221,14 +219,14 @@ let play_game dt =
     (*Text.set_text (Game_state.get_timer ()) (string_of_int (List.length (Game_state.get_obstacles ())));*)
     if ((((Game_state.get_timeEndLevel ())) -. !cpt) < 0.0) then begin
       if not(Game_state.get_isRepeat ()) then begin
-        Game_state.set_numLevel (Game_state.get_numLevel () + 1);
+        if not(Game_state.get_isRandom ()) then 
+          Game_state.set_numLevel (Game_state.get_numLevel () + 1)
+        else Game_state.set_numLevel (1 + Random.int 7);
       end;
       load_level (Game_state.get_numLevel ()) dt;
     end
 	end;
   if not((Life.get (Game_state.get_player ())) > 0) || not(Game_state.isPlay ()) then begin
-    Gfx.debug (string_of_int (List.length (Game_state.get_obstacles_wall ())));
-    Gfx.debug (string_of_int (List.length (Game_state.get_obstacles ())));
     if(Game_state.isPlay ()) then begin
       Game_state.gameover ();
       add_scene init_game_over;
@@ -266,6 +264,11 @@ let init_menu _dt =
                             (float_of_int (Globals.canvas_height)/.2.0 +. 25.0)
                             25;
   in 
+  let _random =
+    Text.create "> random" (float_of_int (Globals.canvas_width)/.2.0 -. 120.0/.2.0) 
+                            (float_of_int (Globals.canvas_height)/.2.0 +. 50.0)
+                            25;
+  in 
   let _niveau1 =
     Text.create "  1" (float_of_int (Globals.canvas_width)/.2.0 +. 120.0/.2.0 +. 20.0) 
                             (float_of_int (Globals.canvas_height)/.2.0)
@@ -284,19 +287,10 @@ let init_menu _dt =
   Menu_manager.set_title (_title, "JustDodge");
   Menu_manager.set_endless (_endless, "endless");
   Menu_manager.set_niveaux (_niveaux, "niveaux");
+  Menu_manager.set_random (_random, "random");
   Menu_manager.set_niveau1 (_niveau1);
   Menu_manager.set_niveau2 (_niveau2);
   Menu_manager.set_niveau3 (_niveau3);
-  Menu_manager.add_listNiveaux "1";
-  Menu_manager.add_listNiveaux "2";
-  Menu_manager.add_listNiveaux "3";
-  Menu_manager.add_listNiveaux "4";
-  Menu_manager.add_listNiveaux "5";
-  Menu_manager.add_listNiveaux "6";
-  Menu_manager.add_listNiveaux "7";
-  Menu_manager.add_listNiveaux "8";
-  Menu_manager.add_listNiveaux "9";
-  Menu_manager.add_listNiveaux "10+";
   Menu_manager.event ();
 
   Input_handler.register_command (KeyDown "z") (fun () -> Menu_manager.event_haut ());
@@ -321,6 +315,7 @@ let menu dt =
     Text.destroy (fst (Menu_manager.get_title ()));
     Text.destroy (fst (Menu_manager.get_endless ()));
     Text.destroy (fst (Menu_manager.get_niveaux ()));
+    Text.destroy (fst (Menu_manager.get_random ()));
     Text.destroy (Menu_manager.get_niveau1 ());
     Text.destroy (Menu_manager.get_niveau2 ());
     Text.destroy (Menu_manager.get_niveau3 ());
@@ -338,6 +333,13 @@ let init _dt =
     Bg.create Texture.black
   in
   Game_state.set_background _background;
+  Menu_manager.add_listNiveaux "1";
+  Menu_manager.add_listNiveaux "2";
+  Menu_manager.add_listNiveaux "3";
+  Menu_manager.add_listNiveaux "4";
+  Menu_manager.add_listNiveaux "5";
+  Menu_manager.add_listNiveaux "6";
+  Menu_manager.add_listNiveaux "7";
   false
 
 let chain_functions () =

@@ -25,6 +25,7 @@ val get_score : unit -> int
 val get_status : unit -> status
 val get_scene: unit -> scene
 val get_isRepeat: unit -> bool
+val get_isRandom: unit -> bool
 
 val playing : unit -> unit
 val pause : unit -> unit
@@ -43,6 +44,7 @@ val inc_score : unit -> unit
 val reset_score : unit -> unit
 
 val set_isRepeat : bool -> unit
+val set_isRandom : bool -> unit
 val set_numLevel : int -> unit
 val set_levels : level list -> unit
 val set_timeStartLevel : float -> unit

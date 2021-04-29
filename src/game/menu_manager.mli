@@ -3,6 +3,7 @@ open Ecs
 val get_title : unit -> (Entity.t * string)
 val get_endless : unit -> (Entity.t * string)
 val get_niveaux : unit -> (Entity.t * string)
+val get_random : unit -> (Entity.t * string)
 val get_niveau1 : unit -> Entity.t
 val get_niveau2 : unit -> Entity.t
 val get_niveau3 : unit -> Entity.t
@@ -12,6 +13,7 @@ val get_currentMode : unit -> int
 val set_title : (Entity.t * string) -> unit
 val set_endless : (Entity.t * string) -> unit
 val set_niveaux : (Entity.t * string) -> unit
+val set_random : (Entity.t * string) -> unit
 val set_niveau1 : Entity.t -> unit
 val set_niveau2 : Entity.t -> unit
 val set_niveau3 : Entity.t -> unit

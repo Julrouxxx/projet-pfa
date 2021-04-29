@@ -5,6 +5,7 @@ type t = {
   title : (Entity.t * string);
   endless : (Entity.t * string);
   niveaux : (Entity.t * string);
+  random : (Entity.t * string);
   niveau1 : Entity.t;
   niveau2 : Entity.t;
   niveau3 : Entity.t;
@@ -21,6 +22,7 @@ let state = ref {
   title = (Entity.dummy, "");
   endless = (Entity.dummy, "");
   niveaux = (Entity.dummy, "");
+  random = (Entity.dummy, "");
   niveau1 = Entity.dummy;
   niveau2 = Entity.dummy;
   niveau3 = Entity.dummy;
@@ -37,10 +39,11 @@ let clear () =
     title = (Entity.dummy, "");
     endless = (Entity.dummy, "");
     niveaux = (Entity.dummy, "");
+    random = (Entity.dummy, "");
     niveau1 = Entity.dummy;
     niveau2 = Entity.dummy;
     niveau3 = Entity.dummy;
-    listNiveaux = [];
+    listNiveaux = !state.listNiveaux;
     keyPressedHaut = false;
     keyPressedBas = false;
     isNiveau = false;
@@ -51,6 +54,7 @@ let clear () =
 let get_title () = !state.title
 let get_endless () = !state.endless
 let get_niveaux () = !state.niveaux
+let get_random () = !state.random
 let get_niveau1 () = !state.niveau1
 let get_niveau2 () = !state.niveau2
 let get_niveau3 () = !state.niveau3
@@ -63,6 +67,8 @@ let set_endless p =
   state := { !state with endless = p }
 let set_niveaux p =
   state := { !state with niveaux = p }
+let set_random p =
+  state := { !state with random = p }
 let set_niveau1 p =
   state := { !state with niveau1 = p }
 let set_niveau2 p =
@@ -80,6 +86,7 @@ let event () =
   | 1 -> 
     Text.set_text (fst !state.endless) ("> "^(snd !state.endless)) 25;
     Text.set_text (fst !state.niveaux) ("  "^(snd !state.niveaux)) 25;
+    Text.set_text (fst !state.random) ("  "^(snd !state.random)) 25;
     (Text.hide_text !state.niveau1);
     (Text.hide_text !state.niveau2);
     (Text.hide_text !state.niveau3)
@@ -89,6 +96,7 @@ let event () =
       Text.set_text (fst !state.niveaux) ("  "^(snd !state.niveaux)) 25
     else
       Text.set_text (fst !state.niveaux) ("> "^(snd !state.niveaux)) 25;
+    Text.set_text (fst !state.random) ("  "^(snd !state.random)) 25;
     (Text.show_text !state.niveau1);
     (Text.show_text !state.niveau2);
     (Text.show_text !state.niveau3);
@@ -107,6 +115,13 @@ let event () =
       Text.set_text !state.niveau2 ("> "^(List.nth !state.listNiveaux (!state.currentNiveau - 1))) 25
     else
       Text.set_text !state.niveau2 ("  "^(List.nth !state.listNiveaux (!state.currentNiveau - 1))) 25
+  | 3 -> 
+    Text.set_text (fst !state.endless) ("  "^(snd !state.endless)) 25;
+    Text.set_text (fst !state.niveaux) ("  "^(snd !state.niveaux)) 25;
+    Text.set_text (fst !state.random) ("> "^(snd !state.random)) 25;
+    (Text.hide_text !state.niveau1);
+    (Text.hide_text !state.niveau2);
+    (Text.hide_text !state.niveau3)
   | _ -> 
     (Text.hide_text !state.niveau1);
     (Text.hide_text !state.niveau2);
@@ -135,7 +150,7 @@ let event_bas () =
         state := { !state with currentNiveau = !state.currentNiveau + 1 };
     end
     else begin
-      if !state.currentMode < 2 then
+      if !state.currentMode < 3 then
         state := { !state with currentMode = !state.currentMode + 1 };
     end;
     event ();
@@ -152,6 +167,7 @@ let enter () =
   | 1 -> 
       Game_state.set_numLevel 1;
       Game_state.set_isRepeat false;
+      Game_state.set_isRandom false;
       Game_state.play ()
   | 2 -> 
     if not(!state.isNiveau) then begin
@@ -160,8 +176,14 @@ let enter () =
     end else begin
       Game_state.set_numLevel (int_of_string (List.nth !state.listNiveaux (!state.currentNiveau - 1)));
       Game_state.set_isRepeat true;
+      Game_state.set_isRandom false;
       Game_state.play ();
     end 
+  | 3 -> 
+      Game_state.set_numLevel (1+(Random.int (List.length (!state.listNiveaux))));
+      Game_state.set_isRepeat false;
+      Game_state.set_isRandom true;
+      Game_state.play ()
   | _ -> ()
 
 let back () =
@@ -171,4 +193,5 @@ let back () =
     if !state.isNiveau then
       state := { !state with isNiveau = false };
     event ()
+  | 3 -> ()
   | _ -> ()

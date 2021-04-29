@@ -31,6 +31,7 @@ type t = {
   mutable numLevel : int;
   mutable score : int;
   mutable isRepeat : bool;
+  mutable isRandom : bool;
   mutable status : status;
   mutable scene : scene;
 }
@@ -56,6 +57,7 @@ let state = ref {
   numLevel = 1;
   score = 0;
   isRepeat = false;
+  isRandom = false;
   status = Playing;
   scene = Menu
 }
@@ -81,6 +83,7 @@ let get_score () = !state.score
 let get_status () = !state.status
 let get_scene () = !state.scene
 let get_isRepeat () = !state.isRepeat
+let get_isRandom () = !state.isRandom
 
 let menu () = !state.status <- Menu
 let playing () = !state.status <- Playing
@@ -102,6 +105,8 @@ let reset_score () =
 
 let set_isRepeat p =
   state := { !state with isRepeat = p }
+let set_isRandom p =
+  state := { !state with isRandom = p }
 
 let set_numLevel p =
   state := { !state with numLevel = p }
