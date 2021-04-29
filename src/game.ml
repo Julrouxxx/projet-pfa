@@ -25,7 +25,6 @@ let reset_background () =
   Bg.reset_background (Game_state.get_background ())
 
 let load_level n dt =
-
   List.iter (fun e -> Obstacle_wall.destroy e) (Game_state.get_obstacles_wall ());
   let strData = Data.create_level n in
   let strData = String.sub strData 2 (String.length strData - 2) in
@@ -34,8 +33,11 @@ let load_level n dt =
   Game_state.set_timeStartLevel (dt +. (List.hd level.obstacles).time);
   Game_state.set_timeEndLevel 0.0;
   for i = 0 to (List.length level.obstacles - 1) do
-    Game_state.set_timeStartLevel (min (Game_state.get_timeStartLevel ()) (dt +. (List.nth level.obstacles i).time));
-    Game_state.set_timeEndLevel (max (Game_state.get_timeEndLevel ()) (dt +. (List.nth level.obstacles i).time+.13000.0*.(50.0/.(List.nth level.obstacles i).speed)));
+    Gfx.debug ((List.nth level.obstacles i).t);
+    if (List.nth level.obstacles i).t = "OBS" then begin
+      Game_state.set_timeStartLevel (min (Game_state.get_timeStartLevel ()) (dt +. (List.nth level.obstacles i).time));
+      Game_state.set_timeEndLevel (max (Game_state.get_timeEndLevel ()) (dt +. (List.nth level.obstacles i).time+.13000.0*.(50.0/.(List.nth level.obstacles i).speed)));
+    end;
   done;
   Game_state.set_color (Gfx.color level.red level.green level.blue 255);
   Wall.set_color (Game_state.get_wall_up ()) (Color (Game_state.get_color ()));
@@ -125,7 +127,7 @@ let init_game _dt =
                         60;
   in 
   let player =
-    Player.create "player" Globals.player_init_x Globals.player_init_y 3 130.0
+    Player.create "player" Globals.player_init_x Globals.player_init_y 1000 130.0
   in
   let coeur_size = 33 in
   let coeur_XoffSet = (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) in
@@ -186,6 +188,8 @@ let init_game _dt =
   Input_handler.register_command (KeyUp "q") (fun () -> Player.move_left player false);
   Input_handler.register_command (KeyUp "d") (fun () -> Player.move_right player false);
 
+  Input_handler.register_command (KeyUp "r") (fun () -> Game_state.menu ());
+
   Game_state.set_timer timer;
   Game_state.set_coeur1 coeur1;
   Game_state.set_coeur2 coeur2;
@@ -216,17 +220,20 @@ let play_game dt =
     Text.set_text (Game_state.get_timer ()) (float_to_time (((Game_state.get_timeEndLevel ())) -. !cpt)) 60;
     (*Text.set_text (Game_state.get_timer ()) (string_of_int (List.length (Game_state.get_obstacles ())));*)
     if ((((Game_state.get_timeEndLevel ())) -. !cpt) < 0.0) then begin
-      if not(Game_state.get_isRepeat ()) then
+      if not(Game_state.get_isRepeat ()) then begin
         Game_state.set_numLevel (Game_state.get_numLevel () + 1);
+      end;
       load_level (Game_state.get_numLevel ()) dt;
     end
 	end;
-  if not((Life.get (Game_state.get_player ())) > 0) then begin
+  if not((Life.get (Game_state.get_player ())) > 0) || not(Game_state.isPlay ()) then begin
     Gfx.debug (string_of_int (List.length (Game_state.get_obstacles_wall ())));
     Gfx.debug (string_of_int (List.length (Game_state.get_obstacles ())));
-    Game_state.gameover ();
-    add_scene init_game_over;
-    add_scene game_over;
+    if(Game_state.isPlay ()) then begin
+      Game_state.gameover ();
+      add_scene init_game_over;
+      add_scene game_over;
+    end;
     Text.destroy (Game_state.get_timer ());
     Wall.destroy (Game_state.get_wall_up ());
     Wall.destroy (Game_state.get_wall_right ());
@@ -243,6 +250,7 @@ let play_game dt =
   Game_state.isPlay ()
 
 let init_menu _dt =
+  Game_state.set_color (Gfx.color 255 255 255 255);
   let _title =
     Text.create "JustDodge" (float_of_int (Globals.canvas_width)/.2.0 -. 480.0/.2.0) 
                             140.0 

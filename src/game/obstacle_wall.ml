@@ -25,7 +25,7 @@ let create x y poids direction timespawn =
   Mass.set e poids;
   Box.set e { width = int_of_float (float_of_int (Globals.player_size)*.1.5); height = int_of_float (float_of_int (Globals.player_size)*.1.5) };
   Surface.set e Texture.white;
-  if poids > 10000.0 then
+  if poids >= 10000.0 then
     Mass.set e infinity;
 
   (* systems *)

@@ -81,7 +81,8 @@ let update _dt el =
               if(e1 != Game_state.get_wall_down () && e2 != Game_state.get_wall_down () &&
                 e1 != Game_state.get_wall_up () && e2 != Game_state.get_wall_up () &&
                 e1 != Game_state.get_wall_right () && e2 != Game_state.get_wall_right () &&
-                e1 != Game_state.get_wall_left () && e2 != Game_state.get_wall_left ()) then
+                e1 != Game_state.get_wall_left () && e2 != Game_state.get_wall_left () && 
+                m1 != infinity && m2 != infinity) then
                 if collision_ignore then begin
                 	Velocity.set e1 new_v1;
     	            Velocity.set e2 new_v2;
