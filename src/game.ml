@@ -26,6 +26,7 @@ let reset_background () =
 
 let load_level n dt =
 
+  List.iter (fun e -> Obstacle_wall.destroy e) (Game_state.get_obstacles_wall ());
   let strData = Data.create_level n in
   let strData = String.sub strData 2 (String.length strData - 2) in
   let level = Data.load_string strData in
@@ -54,6 +55,12 @@ let obstacle_spawner dt =
             Obstacle.create obs.x obs.y obs.speed obs.direction ((Game_state.get_timeStartLevel ()) +. obs.time)
           in
           Game_state.add_obstacles _obstacle;
+        end else if obs.t = "WALL" then begin
+          let _obstacle_wall =
+            Obstacle_wall.create obs.x obs.y obs.speed obs.direction ((Game_state.get_timeStartLevel ()) +. obs.time)
+          in
+          Game_state.add_obstacles_wall _obstacle_wall;
+          Gfx.debug (string_of_int (List.length (Game_state.get_obstacles_wall ())));
         end;
         reset_background ();
       end 
@@ -66,7 +73,6 @@ let obstacle_spawner dt =
     Game_state.set_levels [level]
 
 let init_game_over _dt = 
-  Gfx.debug "init_game_over";
   Game_state.set_color (Gfx.color 255 255 255 255);
   let _title =
     Text.create "GameOver" (float_of_int (Globals.canvas_width)/.2.0 -. 440.0/.2.0) 
@@ -119,7 +125,7 @@ let init_game _dt =
                         60;
   in 
   let player =
-    Player.create "player" Globals.player_init_x Globals.player_init_y 1000 130.0
+    Player.create "player" Globals.player_init_x Globals.player_init_y 3 130.0
   in
   let coeur_size = 33 in
   let coeur_XoffSet = (float_of_int (Globals.canvas_width)/.2.0-.float_of_int (Globals.player_size)*.32.0/.2.0) in
@@ -216,6 +222,8 @@ let play_game dt =
     end
 	end;
   if not((Life.get (Game_state.get_player ())) > 0) then begin
+    Gfx.debug (string_of_int (List.length (Game_state.get_obstacles_wall ())));
+    Gfx.debug (string_of_int (List.length (Game_state.get_obstacles ())));
     Game_state.gameover ();
     add_scene init_game_over;
     add_scene game_over;
@@ -229,6 +237,7 @@ let play_game dt =
     Coeur.destroy (Game_state.get_coeur3 ());
     Player.destroy (Game_state.get_player ());
     List.iter (fun e -> Obstacle.destroy e) (Game_state.get_obstacles ());
+    List.iter (fun e -> Obstacle_wall.destroy e) (Game_state.get_obstacles_wall ());
     Input_handler.clear_commands ();
   end;
   Game_state.isPlay ()

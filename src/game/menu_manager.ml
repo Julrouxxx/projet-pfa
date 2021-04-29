@@ -76,7 +76,6 @@ let remove_listNiveaux p =
   state := { !state with listNiveaux = (List.filter (fun x -> x != p) !state.listNiveaux) }
 
 let event () = 
-  Gfx.debug (string_of_int (!state.currentMode));
   match !state.currentMode with
   | 1 -> 
     Text.set_text (fst !state.endless) ("> "^(snd !state.endless)) 25;

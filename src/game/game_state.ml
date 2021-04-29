@@ -16,6 +16,7 @@ type t = {
   timer : Entity.t;
   mutable color : Gfx.color;
   obstacles : Entity.t list;
+  obstacles_wall : Entity.t list;
   coeur1 : Entity.t;
   coeur2 : Entity.t;
   coeur3 : Entity.t;
@@ -40,6 +41,7 @@ let state = ref {
   timer = Entity.dummy;
   color = Gfx.color 255 255 255 255;
   obstacles = [];
+  obstacles_wall = [];
   coeur1 = Entity.dummy;
   coeur2 = Entity.dummy;
   coeur3 = Entity.dummy;
@@ -64,6 +66,7 @@ let get_timeStartLevel () = !state.timeStartLevel
 let get_timer () = !state.timer
 let get_color () = !state.color
 let get_obstacles () = !state.obstacles
+let get_obstacles_wall () = !state.obstacles_wall
 let get_coeur1 () = !state.coeur1
 let get_coeur2 () = !state.coeur2
 let get_coeur3 () = !state.coeur3
@@ -121,6 +124,11 @@ let add_obstacles p =
   state := { !state with obstacles = !state.obstacles@[p] }
 let remove_obstacles p =
   state := { !state with obstacles = (List.filter (fun x -> x != p) !state.obstacles) }
+
+let add_obstacles_wall p =
+  state := { !state with obstacles_wall = !state.obstacles_wall@[p] }
+let remove_obstacles_wall p =
+  state := { !state with obstacles_wall = (List.filter (fun x -> x != p) !state.obstacles_wall) }
 
 let set_coeur1 p =
   state := { !state with coeur1 = p }

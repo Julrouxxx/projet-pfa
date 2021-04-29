@@ -10,6 +10,7 @@ val get_timeEndLevel : unit -> float
 val get_timer : unit -> Entity.t
 val get_color : unit -> Gfx.color
 val get_obstacles : unit -> Entity.t list
+val get_obstacles_wall : unit -> Entity.t list
 val get_coeur1 : unit -> Entity.t
 val get_coeur2 : unit -> Entity.t
 val get_coeur3 : unit -> Entity.t
@@ -48,6 +49,8 @@ val set_timeStartLevel : float -> unit
 val set_timeEndLevel : float -> unit
 val set_timer : Entity.t -> unit
 val set_color : Gfx.color -> unit
+val add_obstacles_wall : Entity.t -> unit
+val remove_obstacles_wall : Entity.t -> unit
 val add_obstacles : Entity.t -> unit
 val remove_obstacles : Entity.t -> unit
 val set_coeur1 : Entity.t -> unit

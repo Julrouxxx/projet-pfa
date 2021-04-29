@@ -194,6 +194,66 @@ let create_level l =
           str := String.sub  !str 0 (String.length !str - 1);
           !str
   | 4 -> init_data 0 255 255;
+          str := !str ^ (create_obstacle 0.0 "WALL" 5 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 26 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 26 12 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 5 12 0 100.0);
+
+          str := !str ^ (create_obstacle 0.0 "WALL" 8 7 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 23 7 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 23 10 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 8 10 0 100.0);
+
+          str := !str ^ (create_obstacle 0.0 "WALL" 11 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 20 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 20 12 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 11 12 0 100.0);
+
+          str := !str ^ (create_obstacle 0.0 "WALL" 14 7 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 17 7 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 17 10 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 14 10 0 100.0);
+          for i = 0 to 9 do
+            diagonal 1 (5000.0 *. (float_of_int i)) 60.0;
+          done;
+          for i = 0 to 9 do
+            reverse_diagonal 2 (5000.0 *. (float_of_int i)) 60.0;
+          done;
+          str := String.sub  !str 0 (String.length !str - 1);
+          !str
+  | 5 -> init_data 0 255 255;
+          str := !str ^ (create_obstacle 0.0 "WALL" 5 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 26 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 26 12 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 5 12 0 100.0);
+
+          str := !str ^ (create_obstacle 0.0 "WALL" 8 7 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 23 7 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 23 10 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 8 10 0 100.0);
+
+          str := !str ^ (create_obstacle 0.0 "WALL" 11 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 20 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 20 12 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 11 12 0 100.0);
+
+          str := !str ^ (create_obstacle 0.0 "WALL" 14 7 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 17 7 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 17 10 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 14 10 0 100.0);
+          for i = 0 to 9 do
+            diagonal 1 (5000.0 *. (float_of_int i)) 60.0;
+          done;
+          for i = 0 to 9 do
+            reverse_diagonal 2 (5000.0 *. (float_of_int i)) 60.0;
+          done;
+          str := String.sub  !str 0 (String.length !str - 1);
+          !str
+  | 6 -> init_data 0 255 255;
+          str := !str ^ (create_obstacle 0.0 "WALL" 5 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 26 5 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 26 12 0 100.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 5 12 0 100.0);
           for i = 0 to 9 do
             diagonal 1 (5000.0 *. (float_of_int i)) 60.0;
           done;
