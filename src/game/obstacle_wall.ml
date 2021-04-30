@@ -18,7 +18,7 @@ let destroy e =
   Box.delete e;
   Surface.delete e
 
-let create x y poids direction timespawn =
+let create x y poids timespawn =
   let e = Entity.create () in
   Position.set e { x = x_case_to_x_pos x -. (float_of_int (Globals.player_size)*.0.3); y = y_case_to_y_pos y -. (float_of_int (Globals.player_size)*.0.3) };
   Velocity.set e Vector.zero;

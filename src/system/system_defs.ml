@@ -8,6 +8,7 @@ module Direction_S = System.Make(Direction_system)
 module Obstacle_destroyer_S = System.Make(Obstacle_destroyer_system)
 module Invincibility_S = System.Make(Invincibility_system)
 module Coeur_S = System.Make(Coeur_system)
+module Obstacle_bomb_destroyer_S = System.Make(Obstacle_bomb_destroyer_system)
 
 let () =
   System.register (module Draw_S);
@@ -17,4 +18,5 @@ let () =
   System.register (module Direction_S);
   System.register (module Obstacle_destroyer_S);
   System.register (module Invincibility_S);
-  System.register (module Coeur_S)
+  System.register (module Coeur_S);
+  System.register (module Obstacle_bomb_destroyer_S)

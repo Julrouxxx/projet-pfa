@@ -44,27 +44,30 @@ let create name x y life speed =
   e
 
 let invincibility e duration =
-  if Game_state.get_status () == Playing then
+  if Game_state.get_scene () == Play then
     Invincibility.set e duration
 
 let move_up e b =
-  if Game_state.get_status () == Playing then
+  if Game_state.get_scene () == Play then
     Movement.set e (Direction.set_up (Movement.get e) b)
   
 let move_down e b =
-  if Game_state.get_status () == Playing then
+  if Game_state.get_scene () == Play then
     Movement.set e (Direction.set_down (Movement.get e) b)
 
 let move_right e b =
-  if Game_state.get_status () == Playing then
+  if Game_state.get_scene () == Play then
     Movement.set e (Direction.set_right (Movement.get e) b)
 
 let move_left e b =
-  if Game_state.get_status () == Playing then
+  if Game_state.get_scene () == Play then
     Movement.set e (Direction.set_left (Movement.get e) b)
 
 let lose_life e =
-  if Game_state.get_status () == Playing then
+  if Game_state.get_scene () == Play then
     Life.set e ((Life.get e)-1);
-    invincibility e Globals.invincibility_duration;
-    (*Gfx.debug (string_of_int (Life.get e))*)
+    invincibility e Globals.invincibility_duration
+
+let reset_life e =
+  if Game_state.get_scene () == Play then
+    Life.set e 3

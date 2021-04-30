@@ -36,7 +36,10 @@ let load_level n dt =
     if (List.nth level.obstacles i).t = "OBS" then begin
       Game_state.set_timeStartLevel (min (Game_state.get_timeStartLevel ()) (dt +. (List.nth level.obstacles i).time));
       Game_state.set_timeEndLevel (max (Game_state.get_timeEndLevel ()) (dt +. (List.nth level.obstacles i).time+.13000.0*.(50.0/.(List.nth level.obstacles i).speed)));
-    end;
+    end else if (List.nth level.obstacles i).t = "BOMB" then begin
+      Game_state.set_timeStartLevel (min (Game_state.get_timeStartLevel ()) (dt +. (List.nth level.obstacles i).time));
+      Game_state.set_timeEndLevel (max (Game_state.get_timeEndLevel ()) (dt +. 1500.0 +. (List.nth level.obstacles i).time+.13000.0*.(50.0/.(List.nth level.obstacles i).speed)));
+    end
   done;
   Game_state.set_color (Gfx.color level.red level.green level.blue 255);
   Wall.set_color (Game_state.get_wall_up ()) (Color (Game_state.get_color ()));
@@ -58,9 +61,14 @@ let obstacle_spawner dt =
           Game_state.add_obstacles _obstacle;
         end else if obs.t = "WALL" then begin
           let _obstacle_wall =
-            Obstacle_wall.create obs.x obs.y obs.speed obs.direction ((Game_state.get_timeStartLevel ()) +. obs.time)
+            Obstacle_wall.create obs.x obs.y obs.speed ((Game_state.get_timeStartLevel ()) +. obs.time)
           in
           Game_state.add_obstacles_wall _obstacle_wall;
+        end else if obs.t = "BOMB" then begin
+          let _obstacle_bomb =
+            Obstacle_bomb.create obs.x obs.y obs.speed ((Game_state.get_timeStartLevel ()) +. obs.time)
+          in
+          Game_state.add_obstacles_bomb _obstacle_bomb;
         end;
         reset_background ();
       end 
@@ -186,7 +194,7 @@ let init_game _dt =
   Input_handler.register_command (KeyUp "q") (fun () -> Player.move_left player false);
   Input_handler.register_command (KeyUp "d") (fun () -> Player.move_right player false);
 
-  Input_handler.register_command (KeyUp "r") (fun () -> Game_state.menu ());
+  Input_handler.register_command (KeyUp "r") (fun () -> Game_state.menu (); Game_state.reset_score ());
 
   Game_state.set_timer timer;
   Game_state.set_coeur1 coeur1;
@@ -219,8 +227,10 @@ let play_game dt =
     (*Text.set_text (Game_state.get_timer ()) (string_of_int (List.length (Game_state.get_obstacles ())));*)
     if ((((Game_state.get_timeEndLevel ())) -. !cpt) < 0.0) then begin
       if not(Game_state.get_isRepeat ()) then begin
-        if not(Game_state.get_isRandom ()) then 
-          Game_state.set_numLevel (Game_state.get_numLevel () + 1)
+        if not(Game_state.get_isRandom ()) then begin
+          Game_state.set_numLevel (Game_state.get_numLevel () + 1);
+          Player.reset_life (Game_state.get_player ());
+        end
         else Game_state.set_numLevel (1 + Random.int 7);
       end;
       load_level (Game_state.get_numLevel ()) dt;
@@ -243,6 +253,7 @@ let play_game dt =
     Player.destroy (Game_state.get_player ());
     List.iter (fun e -> Obstacle.destroy e) (Game_state.get_obstacles ());
     List.iter (fun e -> Obstacle_wall.destroy e) (Game_state.get_obstacles_wall ());
+    List.iter (fun e -> Obstacle_bomb.destroy e) (Game_state.get_obstacles_bomb ());
     Input_handler.clear_commands ();
   end;
   Game_state.isPlay ()
@@ -340,6 +351,7 @@ let init _dt =
   Menu_manager.add_listNiveaux "5";
   Menu_manager.add_listNiveaux "6";
   Menu_manager.add_listNiveaux "7";
+  Menu_manager.add_listNiveaux "8";
   false
 
 let chain_functions () =

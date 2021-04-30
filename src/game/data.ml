@@ -326,15 +326,27 @@ let rec create_level l =
           str := String.sub  !str 0 (String.length !str - 1);
           !str
   | 7 -> init_data 255 175 255;
-          str := !str ^ (create_obstacle 0.0 "WALL" 5 5 0 50.0);
-          str := !str ^ (create_obstacle 0.0 "WALL" 26 5 0 50.0);
-          str := !str ^ (create_obstacle 0.0 "WALL" 26 12 0 50.0);
-          str := !str ^ (create_obstacle 0.0 "WALL" 5 12 0 50.0);
-          for i = 0 to 9 do
-            diagonal 1 (5000.0 *. (float_of_int i)) 60.0;
+          str := !str ^ (create_obstacle 0.0 "WALL" 5 5 0 10000.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 26 5 0 10000.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 26 12 0 10000.0);
+          str := !str ^ (create_obstacle 0.0 "WALL" 5 12 0 10000.0);
+          for i = 0 to 15 do
+            str := !str ^ (create_obstacle (float_of_int i *. 3000.0) "BOMB" 5 5 0 45.0);
+            str := !str ^ (create_obstacle (float_of_int i *. 3000.0) "BOMB" 26 5 0 45.0);
+            str := !str ^ (create_obstacle (float_of_int i *. 3000.0) "BOMB" 26 12 0 45.0);
+            str := !str ^ (create_obstacle (float_of_int i *. 3000.0) "BOMB" 5 12 0 45.0);
           done;
-          for i = 0 to 9 do
-            reverse_diagonal 2 (5000.0 *. (float_of_int i)) 60.0;
+          for i = 0 to 13 do
+            line 1 (4000.0 *. (float_of_int i)) 75.0;
+          done;
+          str := String.sub  !str 0 (String.length !str - 1);
+          !str
+  | 8 -> init_data 150 255 200;
+          for i = 0 to 33 do
+            str := !str ^ (create_obstacle (float_of_int i *. 1500.0) "BOMB" (1+(Random.int 30)) (1+(Random.int 16)) 0 70.0);
+            str := !str ^ (create_obstacle (float_of_int i *. 1500.0) "BOMB" (1+(Random.int 30)) (1+(Random.int 16)) 0 70.0);
+            str := !str ^ (create_obstacle (float_of_int i *. 1500.0) "BOMB" (1+(Random.int 30)) (1+(Random.int 16)) 0 70.0);
+            str := !str ^ (create_obstacle (float_of_int i *. 1500.0) "BOMB" (1+(Random.int 30)) (1+(Random.int 16)) 0 70.0);
           done;
           str := String.sub  !str 0 (String.length !str - 1);
           !str

@@ -16,3 +16,6 @@ module Destroyer = Component.Make(struct type t = Entity.t -> unit let name = "d
 module Image1 = Component.Make(struct type t = Gfx.image let name = "image1" end)
 module Image2 = Component.Make(struct type t = Gfx.image let name = "image2" end)
 module TimeSpawn = Component.Make(struct type t = float let name = "timespawn" end)
+module Vert = Component.Make(struct type t = float let name = "vert" end)
+module X_case = Component.Make(struct type t = int let name = "x_case" end)
+module Y_case = Component.Make(struct type t = int let name = "y_case" end)

@@ -1,11 +1,6 @@
 open Ecs
 open Data
 
-type status = Menu 
-  | Playing 
-  | Pause 
-  | Gameover
-
 type scene = Menu 
   | Play
   | Gameover
@@ -17,6 +12,7 @@ type t = {
   mutable color : Gfx.color;
   obstacles : Entity.t list;
   obstacles_wall : Entity.t list;
+  obstacles_bomb : Entity.t list;
   coeur1 : Entity.t;
   coeur2 : Entity.t;
   coeur3 : Entity.t;
@@ -32,7 +28,6 @@ type t = {
   mutable score : int;
   mutable isRepeat : bool;
   mutable isRandom : bool;
-  mutable status : status;
   mutable scene : scene;
 }
 
@@ -43,6 +38,7 @@ let state = ref {
   color = Gfx.color 255 255 255 255;
   obstacles = [];
   obstacles_wall = [];
+  obstacles_bomb = [];
   coeur1 = Entity.dummy;
   coeur2 = Entity.dummy;
   coeur3 = Entity.dummy;
@@ -58,7 +54,6 @@ let state = ref {
   score = 0;
   isRepeat = false;
   isRandom = false;
-  status = Playing;
   scene = Menu
 }
 
@@ -69,6 +64,7 @@ let get_timer () = !state.timer
 let get_color () = !state.color
 let get_obstacles () = !state.obstacles
 let get_obstacles_wall () = !state.obstacles_wall
+let get_obstacles_bomb () = !state.obstacles_bomb
 let get_coeur1 () = !state.coeur1
 let get_coeur2 () = !state.coeur2
 let get_coeur3 () = !state.coeur3
@@ -80,15 +76,9 @@ let get_wall_left () = !state.wall_left
 let get_background () = !state.background
 let get_numLevel () = !state.numLevel
 let get_score () = !state.score
-let get_status () = !state.status
 let get_scene () = !state.scene
 let get_isRepeat () = !state.isRepeat
 let get_isRandom () = !state.isRandom
-
-let menu () = !state.status <- Menu
-let playing () = !state.status <- Playing
-let pause () = !state.status <- Pause
-let gameover () = !state.status <- Gameover
 
 let menu () = !state.scene <- Menu
 let play () = !state.scene <- Play
@@ -134,6 +124,11 @@ let add_obstacles_wall p =
   state := { !state with obstacles_wall = !state.obstacles_wall@[p] }
 let remove_obstacles_wall p =
   state := { !state with obstacles_wall = (List.filter (fun x -> x != p) !state.obstacles_wall) }
+
+let add_obstacles_bomb p =
+  state := { !state with obstacles_bomb = !state.obstacles_bomb@[p] }
+let remove_obstacles_bomb p =
+  state := { !state with obstacles_bomb = (List.filter (fun x -> x != p) !state.obstacles_bomb) }
 
 let set_coeur1 p =
   state := { !state with coeur1 = p }
